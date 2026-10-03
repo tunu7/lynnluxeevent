@@ -1,33 +1,20 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Intro from "@/components/Intro";
-import Services from "@/components/Services";
-import FeaturedEvents from "@/components/FeaturedEvents";
-import Approach from "@/components/Approach";
-import InstagramGallery from "@/components/InstagramGallery";
-import CTA from "@/components/CTA";
-import Footer from "@/components/Footer";
+import Hero from "@/components/sections/Hero";
+import ServicesOverview from "@/components/sections/ServicesOverview";
+import FeaturedWork from "@/components/sections/FeaturedWork";
+import Process from "@/components/sections/Process";
+import CtaBand from "@/components/sections/CtaBand";
+import { getEvents, getServices } from "@/lib/content";
 
-export default function Home() {
+export default async function HomePage() {
+  const [events, services] = await Promise.all([getEvents(), getServices()]);
+
   return (
-    <main>
-      <Navbar />
-
-      <Hero />
-
-      <Intro />
-
-      <Services />
-
-      <FeaturedEvents />
-
-      <Approach />
-
-      <InstagramGallery />
-
-      <CTA />
-
-      <Footer />
-    </main>
+    <>
+      <Hero feature={events[0]} />
+      <ServicesOverview services={services} />
+      <FeaturedWork events={events} />
+      <Process />
+      <CtaBand />
+    </>
   );
 }

@@ -1,102 +1,87 @@
-import Link from "next/link";
-import { MessageCircle, Phone, MapPin } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import type { Metadata } from "next";
+import { AtSign, MapPin, MessageCircle, Phone } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import PageHeader from "@/components/ui/PageHeader";
+import ButtonLink from "@/components/ui/ButtonLink";
+import { site, whatsappLink } from "@/lib/site";
 
-export const metadata = {
-  title: "Contact | Lynn Luxe Event Studio",
-  description: "Contact Lynn Luxe Event Studio.",
+export const metadata: Metadata = {
+  title: "Contact",
+  description: `Call, WhatsApp or message ${site.name} to start planning your event.`,
+  alternates: { canonical: "/contact" },
 };
+
+const channels: { icon: LucideIcon; label: string; value: string; href?: string; note: string }[] = [
+  {
+    icon: Phone,
+    label: "Call",
+    value: site.contact.phoneDisplay,
+    href: `tel:${site.contact.phone}`,
+    note: "Speak with our team directly.",
+  },
+  {
+    icon: MessageCircle,
+    label: "WhatsApp",
+    value: "Chat with us",
+    href: whatsappLink(`Hello ${site.shortName}, I'd like to plan an event.`),
+    note: "The quickest way to reach us.",
+  },
+  {
+    icon: AtSign,
+    label: "Instagram",
+    value: site.contact.instagramHandle,
+    href: site.contact.instagram,
+    note: "Recent work and behind the scenes.",
+  },
+  {
+    icon: MapPin,
+    label: "Studio",
+    value: `${site.contact.locality}, ${site.contact.region}`,
+    note: "Events across the state.",
+  },
+];
 
 export default function ContactPage() {
   return (
-    <main>
-      <Navbar />
+    <>
+      <PageHeader
+        eyebrow="Contact"
+        title="Let's talk about your event."
+        intro="Tell us a little about what you're planning and we'll get back to you with ideas and next steps."
+        action={<ButtonLink href="/inquire">Start an inquiry</ButtonLink>}
+      />
 
-      <section className="min-h-[80vh] px-6 pb-24 pt-40 md:px-10 md:pb-32 md:pt-52">
-        <div className="mx-auto max-w-375">
+      <section className="section-y">
+        <ul className="container-site grid gap-px overflow-hidden rounded-sm bg-line sm:grid-cols-2 lg:grid-cols-4">
+          {channels.map(({ icon: Icon, label, value, href, note }) => {
+            const body = (
+              <>
+                <Icon aria-hidden size={22} strokeWidth={1.5} className="text-accent" />
+                <p className="eyebrow mt-10 text-muted">{label}</p>
+                <p className="mt-2 break-words font-display text-2xl">{value}</p>
+                <p className="mt-2 text-sm text-muted">{note}</p>
+              </>
+            );
+            const external = href?.startsWith("http");
 
-          <p className="mb-8 text-[10px] uppercase tracking-[0.35em] text-[#8a806f]">
-            Get in touch
-          </p>
-
-          <h1 className="max-w-5xl font-display text-7xl leading-[0.8] md:text-[11vw]">
-            Lets talk
-            <br />
-            about your event.
-          </h1>
-
-          <div className="mt-20 grid gap-12 md:grid-cols-3">
-
-            <a
-              href="tel:+917085262635"
-              className="group border-t border-black/15 pt-7"
-            >
-              <Phone size={18} />
-
-              <p className="mt-6 text-[9px] uppercase tracking-[0.3em] text-[#8a806f]">
-                Phone
-              </p>
-
-              <p className="mt-3 text-lg">
-                +91 70852 62635
-              </p>
-            </a>
-
-            <a
-              href="https://wa.me/917085262635"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group border-t border-black/15 pt-7"
-            >
-              <MessageCircle size={18} />
-
-              <p className="mt-6 text-[9px] uppercase tracking-[0.3em] text-[#8a806f]">
-                WhatsApp
-              </p>
-
-              <p className="mt-3 text-lg">
-                Chat with us
-              </p>
-            </a>
-
-            <a
-              href="https://www.instagram.com/lynnluxeeventstudio/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group border-t border-black/15 pt-7"
-            >
-
-              <p className="mt-3 text-lg">
-                @lynnluxeeventstudio
-              </p>
-            </a>
-
-          </div>
-
-          <div className="mt-16 border-t border-black/15 pt-7">
-            <MapPin size={18} />
-
-            <p className="mt-6 text-[9px] uppercase tracking-[0.3em] text-[#8a806f]">
-              Studio
-            </p>
-
-            <p className="mt-3 text-lg">
-              Jollang, Arunachal Pradesh
-            </p>
-          </div>
-
-          <Link
-            href="/inquire"
-            className="mt-16 inline-block border border-black px-10 py-5 text-[9px] uppercase tracking-[0.25em] transition-colors hover:bg-black hover:text-white"
-          >
-            Start an inquiry
-          </Link>
-
-        </div>
+            return (
+              <li key={label} className="bg-paper">
+                {href ? (
+                  <a
+                    href={href}
+                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="block h-full p-8 transition-colors hover:bg-paper-2 md:p-10"
+                  >
+                    {body}
+                  </a>
+                ) : (
+                  <div className="h-full p-8 md:p-10">{body}</div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       </section>
-
-      <Footer />
-    </main>
+    </>
   );
 }

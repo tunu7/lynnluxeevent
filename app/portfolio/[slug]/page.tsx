@@ -1,159 +1,154 @@
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CTA from "@/components/CTA";
-import { events } from "@/data/events";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import Media from "@/components/ui/Media";
+import Reveal from "@/components/ui/Reveal";
+import JsonLd from "@/components/ui/JsonLd";
+import ButtonLink from "@/components/ui/ButtonLink";
+import CtaBand from "@/components/sections/CtaBand";
+import { getAdjacentEvent, getEvent, getEvents } from "@/lib/content";
+import { site } from "@/lib/site";
 
 export async function generateStaticParams() {
-  return events.map((event) => ({
-    slug: event.slug,
-  }));
+  const events = await getEvents();
+  return events.map((event) => ({ slug: event.slug }));
 }
 
-export default async function EventPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export async function generateMetadata({ params }: PageProps<"/portfolio/[slug]">): Promise<Metadata> {
   const { slug } = await params;
+  const event = await getEvent(slug);
+  if (!event) return {};
 
-  const event = events.find((item) => item.slug === slug);
+  return {
+    title: event.title,
+    description: event.summary,
+    alternates: { canonical: `/portfolio/${event.slug}` },
+    openGraph: { title: event.title, description: event.summary, type: "article" },
+  };
+}
 
-  if (!event) {
-    notFound();
-  }
+export default async function EventPage({ params }: PageProps<"/portfolio/[slug]">) {
+  const { slug } = await params;
+  const [event, next] = await Promise.all([getEvent(slug), getAdjacentEvent(slug)]);
+  if (!event) notFound();
+
+  const details = [
+    ["Occasion", event.category],
+    ["Location", event.location],
+    ["Year", event.year],
+  ];
 
   return (
-    <main>
-      <Navbar />
-
-      <section className="px-6 pb-20 pt-40 md:px-10 md:pb-28 md:pt-52">
-        <div className="mx-auto max-w-375">
-
+    <>
+      <section className="pb-12 pt-32 md:pb-16 md:pt-40">
+        <div className="container-site animate-rise">
           <Link
             href="/portfolio"
-            className="mb-12 inline-flex items-center gap-3 text-[9px] uppercase tracking-[0.25em]"
+            className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink"
           >
-            <ArrowLeft size={14} />
-            Back to portfolio
+            <ArrowLeft aria-hidden size={16} />
+            Portfolio
           </Link>
 
-          <div className="grid gap-14 md:grid-cols-12 md:items-end">
-
+          <div className="mt-10 grid gap-10 md:grid-cols-12 md:items-end">
             <div className="md:col-span-8">
-              <p className="mb-6 text-[10px] uppercase tracking-[0.35em] text-[#8a806f]">
-                {event.category}
-              </p>
-
-              <h1 className="font-display text-7xl leading-[0.8] md:text-[10vw]">
-                {event.title}
-              </h1>
+              <p className="eyebrow text-accent">{event.category}</p>
+              <h1 className="mt-5 text-5xl leading-[1.02] sm:text-6xl md:text-8xl">{event.title}</h1>
             </div>
-
-            <div className="md:col-span-3 md:col-start-10">
-              <p className="text-[9px] uppercase tracking-[0.25em] text-[#8a806f]">
-                Location
-              </p>
-
-              <p className="mt-2 text-sm">
-                {event.location}
-              </p>
-
-              <p className="mt-6 text-[9px] uppercase tracking-[0.25em] text-[#8a806f]">
-                Year
-              </p>
-
-              <p className="mt-2 text-sm">
-                {event.year}
-              </p>
-            </div>
-
+            <dl className="grid grid-cols-3 gap-6 border-t border-line pt-6 md:col-span-4 md:grid-cols-1 md:gap-5 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+              {details.map(([term, value]) => (
+                <div key={term}>
+                  <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">{term}</dt>
+                  <dd className="mt-1 text-base">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </section>
 
-      <section className="px-6 md:px-10">
-        <div className="mx-auto max-w-375">
-          <div className="relative aspect-16/8 overflow-hidden">
-            <Image
-              src={event.cover}
-              alt={event.title}
-              fill
-              priority
-              className="object-cover"
+      <div className="container-site">
+        <Media
+          src={event.cover}
+          alt={event.title}
+          aspect="aspect-4/3 md:aspect-16/8"
+          sizes="(min-width: 1312px) 1312px, 100vw"
+          preload
+          className="rounded-sm"
+          label={event.title}
+        />
+      </div>
+
+      <section className="section-y">
+        <div className="container-site grid gap-10 md:grid-cols-12">
+          <p className="eyebrow text-accent md:col-span-3">The story</p>
+          <p className="font-display text-3xl leading-snug md:col-span-8 md:col-start-5 md:text-5xl md:leading-tight">
+            {event.summary}
+          </p>
+        </div>
+      </section>
+
+      {event.gallery.length > 0 ? (
+        <section aria-label="Gallery" className="pb-8">
+          <ul className="container-site grid gap-4 sm:grid-cols-2 md:gap-6">
+            {event.gallery.map((src, i) => (
+              <Reveal as="li" key={src} delay={(i % 2) * 120} className={i % 2 === 1 ? "sm:mt-24" : undefined}>
+                <Media
+                  src={src}
+                  alt={`${event.title} — photo ${i + 1}`}
+                  aspect="aspect-4/5"
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="rounded-sm"
+                />
+              </Reveal>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {next && next.slug !== event.slug ? (
+        <section className="container-site pt-16">
+          <Link
+            href={`/portfolio/${next.slug}`}
+            className="group flex items-center justify-between gap-6 border-y border-line py-10"
+          >
+            <span>
+              <span className="eyebrow text-muted">Next event</span>
+              <span className="mt-3 block font-display text-4xl transition-colors group-hover:text-accent md:text-6xl">
+                {next.title}
+              </span>
+            </span>
+            <ArrowRight
+              aria-hidden
+              size={32}
+              strokeWidth={1.5}
+              className="shrink-0 transition-transform duration-300 group-hover:translate-x-1"
             />
+          </Link>
+          <div className="mt-8">
+            <ButtonLink href="/portfolio" variant="text" arrow={false}>
+              All events
+            </ButtonLink>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      <section className="px-6 py-24 md:px-10 md:py-36">
-        <div className="mx-auto grid max-w-375 gap-16 md:grid-cols-12">
+      <CtaBand title="Planning your own celebration?" />
 
-          <div className="md:col-span-4">
-            <p className="text-[9px] uppercase tracking-[0.3em] text-[#8a806f]">
-              The Story
-            </p>
-          </div>
-
-          <div className="md:col-span-7 md:col-start-6">
-            <p className="font-display text-4xl leading-tight md:text-6xl">
-              {event.description}
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      <section className="px-6 md:px-10">
-        <div className="mx-auto grid max-w-375 gap-5 md:grid-cols-2">
-
-          {event.images.map((image, index) => (
-            <div
-              key={image}
-              className={`relative overflow-hidden ${
-                index === 0
-                  ? "aspect-4/5"
-                  : index === 1
-                  ? "aspect-4/5 md:mt-32"
-                  : "aspect-4/5"
-              }`}
-            >
-              <Image
-                src={image}
-                alt={`${event.title} image ${index + 1}`}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ))}
-
-        </div>
-      </section>
-
-      <section className="px-6 py-28 text-center md:px-10 md:py-40">
-        <p className="mb-8 text-[9px] uppercase tracking-[0.3em] text-[#8a806f]">
-          Planning your own celebration?
-        </p>
-
-        <h2 className="font-display text-6xl md:text-8xl">
-          Lets create yours.
-        </h2>
-
-        <Link
-          href="/inquire"
-          className="mt-10 inline-flex items-center gap-4 border border-black px-8 py-5 text-[9px] uppercase tracking-[0.25em]"
-        >
-          Start an inquiry
-          <ArrowUpRight size={14} />
-        </Link>
-      </section>
-
-      <CTA />
-
-      <Footer />
-    </main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "CreativeWork",
+          name: event.title,
+          description: event.summary,
+          genre: event.category,
+          dateCreated: event.year,
+          locationCreated: event.location,
+          image: new URL(event.cover, site.url).toString(),
+          creator: { "@type": "Organization", name: site.name, url: site.url },
+        }}
+      />
+    </>
   );
 }

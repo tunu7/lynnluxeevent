@@ -1,83 +1,151 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f7f3ea;
-  --foreground: #171713;
-  --muted: #69645d;
-  --gold: #c8aa6b;
-  --green: #17251e;
-  --cream: #f7f3ea;
-  --line: rgba(23, 23, 19, 0.14);
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  --color-paper: #f7f3ed;
+  --color-paper-2: #efe8de;
+  --color-paper-3: #e4dacb;
+  --color-ink: #1d1915;
+  --color-ink-2: #3a332c;
+  --color-muted: #6d6358;
+  --color-line: rgb(29 25 21 / 0.12);
+  --color-accent: #9a6b43;
+  --color-accent-soft: #c9a27c;
+  --color-night: #191512;
+  --color-night-2: #241f1a;
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--letter-spacing: 0.16em;
+  --text-eyebrow--line-height: 1.2;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --container-site: 82rem;
 }
 
-* {
-  box-sizing: border-box;
-}
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), sans-serif;
-}
-
-body,
-button,
-input,
-textarea,
-select {
-  font-family: var(--font-inter), sans-serif;
-}
-
-::selection {
-  background: var(--green);
-  color: var(--cream);
-}
-
-.font-display {
-  font-family: var(--font-cormorant), serif;
-}
-
-img {
-  display: block;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: rgba(23, 23, 19, 0.4);
-}
-
-select {
-  appearance: none;
-}
-
-::-webkit-scrollbar {
-  width: 7px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f7f3ea;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c8aa6b;
-}
-
-@media (max-width: 768px) {
+@layer base {
   html {
-    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
-    overflow-x: hidden;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    font-variation-settings: "SOFT" 50, "WONK" 0;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                           */
+/* ------------------------------------------------------------------ */
+
+@utility container-site {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2.5rem;
+  }
+}
+
+@utility section-y {
+  padding-block: 5rem;
+
+  @media (width >= 48rem) {
+    padding-block: 8rem;
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-eyebrow);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  line-height: var(--text-eyebrow--line-height);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Scroll reveal: only hides content when JS can reveal it again. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 0.9s var(--ease-out-soft),
+      transform 0.9s var(--ease-out-soft);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal][data-visible] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-rise {
+    animation: rise 1s var(--ease-out-soft) both;
+    animation-delay: var(--rise-delay, 0ms);
   }
 }

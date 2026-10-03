@@ -1,252 +1,60 @@
-"use client";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import PageHeader from "@/components/ui/PageHeader";
+import InquiryForm from "@/components/sections/InquiryForm";
+import { site } from "@/lib/site";
 
-import { FormEvent, useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+export const metadata: Metadata = {
+  title: "Plan your event",
+  description: `Tell ${site.name} about your celebration and we'll be in touch with ideas and next steps.`,
+  alternates: { canonical: "/inquire" },
+};
 
-export default function InquiryPage() {
-  const [submitted, setSubmitted] = useState(false);
+const steps = [
+  "Share a few details about your occasion.",
+  "We reply on WhatsApp, usually within a day.",
+  "We meet to shape the concept and plan.",
+];
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const form = e.currentTarget;
-    const data = new FormData(form);
-
-    const name = data.get("name");
-    const phone = data.get("phone");
-    const eventType = data.get("eventType");
-    const date = data.get("date");
-    const guests = data.get("guests");
-    const location = data.get("location");
-    const message = data.get("message");
-
-    const text = `
-Hello Lynn Luxe Event Studio,
-
-I'd like to inquire about an event.
-
-Name: ${name}
-Phone: ${phone}
-Event Type: ${eventType}
-Event Date: ${date}
-Expected Guests: ${guests}
-Location: ${location}
-
-About the event:
-${message}
-    `.trim();
-
-    const whatsappUrl = `https://wa.me/917085262635?text=${encodeURIComponent(
-      text
-    )}`;
-
-    window.open(whatsappUrl, "_blank");
-
-    setSubmitted(true);
-    form.reset();
-  }
-
+export default function InquirePage() {
   return (
-    <main>
-      <Navbar />
+    <>
+      <PageHeader
+        eyebrow="Start a conversation"
+        title="Tell us about your celebration."
+        intro="The more you share, the better we can prepare. Only your name, phone and occasion are required."
+      />
 
-      <section className="px-6 pb-24 pt-40 md:px-10 md:pb-32 md:pt-52">
-        <div className="mx-auto max-w-375">
+      <section className="section-y bg-paper-2">
+        <div className="container-site grid gap-12 lg:grid-cols-12">
+          <aside className="lg:col-span-4">
+            <p className="eyebrow text-accent">What happens next</p>
+            <ol className="mt-8 space-y-6">
+              {steps.map((step, i) => (
+                <li key={step} className="flex gap-4">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink text-sm font-semibold text-paper">
+                    {i + 1}
+                  </span>
+                  <span className="pt-1 text-base leading-relaxed text-ink-2">{step}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-10 text-sm text-muted">
+              Prefer to talk?{" "}
+              <a href={`tel:${site.contact.phone}`} className="font-semibold text-ink underline underline-offset-4">
+                {site.contact.phoneDisplay}
+              </a>
+            </p>
+          </aside>
 
-          <p className="mb-7 text-[10px] uppercase tracking-[0.35em] text-[#8a806f]">
-            Start a conversation
-          </p>
-
-          <h1 className="max-w-6xl font-display text-7xl leading-[0.8] md:text-[11vw]">
-            Tell us about
-            <br />
-            your celebration.
-          </h1>
-
+          <div className="lg:col-span-8">
+            {/* Reads ?type= from the URL, so it streams in after the static shell. */}
+            <Suspense fallback={<div className="h-[42rem] animate-pulse rounded-sm bg-paper" aria-hidden />}>
+              <InquiryForm />
+            </Suspense>
+          </div>
         </div>
       </section>
-
-      <section className="bg-[#eae5dd] px-6 py-20 md:px-10 md:py-32">
-        <div className="mx-auto max-w-250">
-
-          {submitted && (
-            <div className="mb-10 border border-[#17251e] bg-[#17251e] p-6 text-sm text-white">
-              Your inquiry has been prepared for WhatsApp.
-              Please complete the message in WhatsApp to send it to Lynn Luxe.
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-12">
-
-            <div className="grid gap-10 md:grid-cols-2">
-
-              <div>
-                <label
-                  htmlFor="name"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.3em]"
-                >
-                  Your name *
-                </label>
-
-                <input
-                  id="name"
-                  name="name"
-                  required
-                  type="text"
-                  className="w-full border-b border-black/25 bg-transparent py-4 text-base outline-none focus:border-black"
-                  placeholder="Your name"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.3em]"
-                >
-                  Phone *
-                </label>
-
-                <input
-                  id="phone"
-                  name="phone"
-                  required
-                  type="tel"
-                  className="w-full border-b border-black/25 bg-transparent py-4 text-base outline-none focus:border-black"
-                  placeholder="+91"
-                />
-              </div>
-
-            </div>
-
-            <div className="grid gap-10 md:grid-cols-2">
-
-              <div>
-                <label
-                  htmlFor="eventType"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.3em]"
-                >
-                  Event type *
-                </label>
-
-                <select
-                  id="eventType"
-                  name="eventType"
-                  required
-                  defaultValue=""
-                  className="w-full border-b border-black/25 bg-transparent py-4 text-base outline-none"
-                >
-                  <option value="" disabled>
-                    Select event
-                  </option>
-
-                  <option value="Wedding">
-                    Wedding
-                  </option>
-
-                  <option value="Birthday">
-                    Birthday
-                  </option>
-
-                  <option value="Corporate Event">
-                    Corporate Event
-                  </option>
-
-                  <option value="Private Event">
-                    Private Event
-                  </option>
-
-                  <option value="Other">
-                    Other
-                  </option>
-                </select>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="date"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.3em]"
-                >
-                  Event date
-                </label>
-
-                <input
-                  id="date"
-                  name="date"
-                  type="date"
-                  className="w-full border-b border-black/25 bg-transparent py-4 text-base outline-none"
-                />
-              </div>
-
-            </div>
-
-            <div className="grid gap-10 md:grid-cols-2">
-
-              <div>
-                <label
-                  htmlFor="guests"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.3em]"
-                >
-                  Expected guests
-                </label>
-
-                <input
-                  id="guests"
-                  name="guests"
-                  type="number"
-                  className="w-full border-b border-black/25 bg-transparent py-4 text-base outline-none focus:border-black"
-                  placeholder="Approximate number"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="location"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.3em]"
-                >
-                  Event location
-                </label>
-
-                <input
-                  id="location"
-                  name="location"
-                  type="text"
-                  className="w-full border-b border-black/25 bg-transparent py-4 text-base outline-none focus:border-black"
-                  placeholder="Venue / city"
-                />
-              </div>
-
-            </div>
-
-            <div>
-              <label
-                htmlFor="message"
-                className="mb-3 block text-[9px] uppercase tracking-[0.3em]"
-              >
-                Tell us about your event
-              </label>
-
-              <textarea
-                id="message"
-                name="message"
-                rows={6}
-                className="w-full resize-none border-b border-black/25 bg-transparent py-4 text-base outline-none focus:border-black"
-                placeholder="Tell us about your vision..."
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="border border-black bg-black px-10 py-5 text-[9px] uppercase tracking-[0.3em] text-white transition-colors hover:bg-transparent hover:text-black"
-            >
-              Send inquiry via WhatsApp
-            </button>
-
-          </form>
-        </div>
-      </section>
-
-      <Footer />
-    </main>
+    </>
   );
 }

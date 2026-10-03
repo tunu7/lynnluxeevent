@@ -1,84 +1,82 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CTA from "@/components/CTA";
-import { services } from "@/data/services";
+import type { Metadata } from "next";
+import { Check } from "lucide-react";
+import ButtonLink from "@/components/ui/ButtonLink";
+import PageHeader from "@/components/ui/PageHeader";
+import Reveal from "@/components/ui/Reveal";
+import CtaBand from "@/components/sections/CtaBand";
+import { getServices } from "@/lib/content";
 
-export const metadata = {
-  title: "Services | Lynn Luxe Event Studio",
+export const metadata: Metadata = {
+  title: "Services",
   description:
-    "Event planning, weddings, birthdays, corporate events and catering by Lynn Luxe Event Studio.",
+    "Event planning, weddings, birthdays, corporate events and catering in Arunachal Pradesh by Lynn Luxe Event Studio.",
+  alternates: { canonical: "/services" },
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
+
   return (
-    <main>
-      <Navbar />
+    <>
+      <PageHeader
+        eyebrow="Services"
+        title="Events, beautifully considered."
+        intro="Choose a single service or let us run the whole occasion. Every engagement starts with a conversation about what matters to you."
+      />
 
-      <section className="px-6 pb-24 pt-40 md:px-10 md:pb-32 md:pt-52">
-        <div className="mx-auto max-w-375">
-
-          <p className="mb-7 text-[10px] uppercase tracking-[0.35em] text-[#8a806f]">
-            What We Offer
-          </p>
-
-          <h1 className="max-w-6xl font-display text-7xl leading-[0.82] md:text-[11vw]">
-            Events,
-            <br />
-            beautifully considered.
-          </h1>
-
-        </div>
-      </section>
-
-      <section className="bg-[#eae5dd] px-6 py-10 md:px-10 md:py-20">
-        <div className="mx-auto max-w-375">
-
+      <nav aria-label="Services" className="sticky top-18 z-40 border-b border-line bg-paper/90 backdrop-blur-md md:top-20">
+        <ul className="container-site flex gap-2 overflow-x-auto py-3 [scrollbar-width:none]">
           {services.map((service) => (
-            <article
-              key={service.number}
-              className="grid gap-8 border-b border-black/15 py-14 md:grid-cols-12 md:items-start"
-            >
-              <div className="md:col-span-1">
-                <span className="text-[10px] tracking-[0.2em] text-[#8a806f]">
-                  {service.number}
-                </span>
-              </div>
-
-              <div className="md:col-span-5">
-                <h2 className="font-display text-5xl leading-none md:text-6xl">
-                  {service.title}
-                </h2>
-
-                <p className="mt-6 max-w-md text-sm leading-7 text-[#69645d]">
-                  {service.shortDescription}
-                </p>
-              </div>
-
-              <div className="md:col-span-5 md:col-start-8">
-                <p className="text-sm leading-7 text-[#69645d]">
-                  {service.description}
-                </p>
-
-                <ul className="mt-7 space-y-3">
-                  {service.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="border-b border-black/10 pb-3 text-xs"
-                    >
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
+            <li key={service.slug}>
+              <a
+                href={`#${service.slug}`}
+                className="block whitespace-nowrap rounded-full border border-line px-4 py-2 text-sm text-ink-2 transition-colors hover:border-ink hover:text-ink"
+              >
+                {service.title}
+              </a>
+            </li>
           ))}
+        </ul>
+      </nav>
 
-        </div>
-      </section>
+      <div className="container-site">
+        {services.map((service, i) => (
+          <Reveal
+            as="article"
+            key={service.slug}
+            className="grid gap-10 border-b border-line py-16 last:border-b-0 md:grid-cols-12 md:py-24"
+          >
+            <div id={service.slug} className="scroll-mt-40 md:col-span-5">
+              <span className="text-sm font-semibold tabular-nums text-accent">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h2 className="mt-4 text-4xl md:text-5xl">{service.title}</h2>
+              <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">{service.summary}</p>
+            </div>
 
-      <CTA />
+            <div className="md:col-span-6 md:col-start-7">
+              <p className="text-base leading-relaxed text-muted">{service.description}</p>
+              <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                {service.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm">
+                    <Check aria-hidden size={16} className="mt-0.5 shrink-0 text-accent" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <ButtonLink
+                href={`/inquire?type=${encodeURIComponent(service.inquiryType)}`}
+                variant="secondary"
+                className="mt-10"
+              >
+                Inquire about {service.title.toLowerCase()}
+              </ButtonLink>
+            </div>
+          </Reveal>
+        ))}
+      </div>
 
-      <Footer />
-    </main>
+      <CtaBand />
+    </>
   );
 }
