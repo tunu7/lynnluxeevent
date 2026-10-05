@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
+    // Photos uploaded from the admin dashboard live in Vercel Blob.
+    remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
     qualities: [60, 75, 90],
     deviceSizes: [640, 828, 1080, 1440, 1920, 2560],
     // Source photos are content-addressed by path and rarely change.

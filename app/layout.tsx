@@ -1,8 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
-import SiteHeader from "@/components/layout/SiteHeader";
-import SiteFooter from "@/components/layout/SiteFooter";
-import JsonLd from "@/components/ui/JsonLd";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -53,23 +50,6 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-const organization = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: site.name,
-  description: site.description,
-  url: site.url,
-  telephone: site.contact.phone,
-  sameAs: [site.contact.instagram],
-  areaServed: { "@type": "State", name: site.contact.region },
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: site.contact.locality,
-    addressRegion: site.contact.region,
-    addressCountry: site.contact.country,
-  },
-};
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${fraunces.variable} ${manrope.variable}`}>
@@ -80,12 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-        <JsonLd data={organization} />
+        {children}
       </body>
     </html>
   );

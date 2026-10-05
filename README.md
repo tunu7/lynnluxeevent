@@ -38,3 +38,13 @@ Put images in `public/images/` at the paths referenced in `content/events.ts`
 
 Content reads are cached with tags `events` / `services`. Once content lives in a CMS,
 call `revalidateTag("events")` from a webhook route to publish updates instantly.
+
+## Admin dashboard
+
+`/admin` manages inquiries, portfolio events and services. Content is stored in Neon Postgres and photos in Vercel Blob, both provisioned through the Vercel project, so edits go live without a redeploy.
+
+- **Sign in** with the `ADMIN_PASSWORD` environment variable. Changing `SESSION_SECRET` signs everyone out.
+- **Local env:** `vercel env pull .env.local --yes`
+- **Schema changes:** edit `db/schema.ts`, then `npx drizzle-kit generate` and `npm run db:migrate`
+- **Seed** the original `content/*.ts` entries into an empty database: `npm run db:seed`
+- **Browse data:** `npm run db:studio`

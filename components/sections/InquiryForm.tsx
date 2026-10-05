@@ -5,6 +5,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { eventTypes, type EventType } from "@/content/types";
 import { site, whatsappLink } from "@/lib/site";
+import { submitInquiry } from "@/lib/inquiry-actions";
 
 const field =
   "w-full rounded-sm border border-ink/15 bg-paper px-4 py-3.5 text-base text-ink outline-none transition-colors placeholder:text-ink/35 hover:border-ink/30 focus:border-ink";
@@ -36,8 +37,12 @@ export default function InquiryForm() {
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const url = whatsappLink(buildMessage(new FormData(e.currentTarget)));
+    const data = new FormData(e.currentTarget);
+    const url = whatsappLink(buildMessage(data));
+    // Open WhatsApp synchronously so popup blockers allow it, and save a copy
+    // for the admin dashboard in the background.
     window.open(url, "_blank", "noopener,noreferrer");
+    void submitInquiry(data).catch(() => {});
     setSentUrl(url);
   }
 
@@ -74,6 +79,11 @@ export default function InquiryForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-6 rounded-sm bg-paper p-6 sm:grid-cols-2 md:gap-8 md:p-12">
+      <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="company">Company</label>
+        <input id="company" name="company" tabIndex={-1} autoComplete="off" />
+      </div>
+
       <Field label="Your name" htmlFor="name" required>
         <input id="name" name="name" required autoComplete="name" className={field} placeholder="Full name" />
       </Field>
@@ -131,7 +141,7 @@ export default function InquiryForm() {
 
       <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">
-          Submitting opens WhatsApp with your details filled in — nothing is stored on this site.
+          Submitting opens WhatsApp with your details filled in and shares a copy with our team.
         </p>
         <button
           type="submit"

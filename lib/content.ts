@@ -1,39 +1,72 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { events } from "@/content/events";
-import { services } from "@/content/services";
+import { asc, eq } from "drizzle-orm";
+import { getDb } from "@/db";
+import { events, services, type EventRow, type ServiceRow } from "@/db/schema";
+import type { EventType, PortfolioEvent, Service } from "@/content/types";
 
 /**
- * Data access layer. Pages never import content files directly, so moving
- * content to a CMS or database only means changing these function bodies.
- * Results are cached and tagged; call `revalidateTag("events")` from a
- * webhook to publish changes without a redeploy.
+ * Public data access layer. Results are cached and tagged; admin Server
+ * Actions call `updateTag("events")` / `updateTag("services")` so edits go
+ * live immediately without a redeploy.
  */
+
+function toEvent(row: EventRow): PortfolioEvent {
+  return {
+    slug: row.slug,
+    title: row.title,
+    category: row.category,
+    location: row.location,
+    year: row.year,
+    summary: row.summary,
+    cover: row.cover,
+    gallery: row.gallery,
+  };
+}
+
+function toService(row: ServiceRow): Service {
+  return {
+    slug: row.slug,
+    title: row.title,
+    summary: row.summary,
+    description: row.description,
+    features: row.features,
+    inquiryType: row.inquiryType as EventType,
+  };
+}
 
 export async function getEvents() {
   "use cache";
   cacheLife("days");
   cacheTag("events");
-  return events;
+  const rows = await getDb()
+    .select()
+    .from(events)
+    .where(eq(events.published, true))
+    .orderBy(asc(events.position), asc(events.id));
+  return rows.map(toEvent);
 }
 
 export async function getEvent(slug: string) {
   "use cache";
   cacheLife("days");
   cacheTag("events", `event:${slug}`);
-  return events.find((event) => event.slug === slug) ?? null;
+  const [row] = await getDb().select().from(events).where(eq(events.slug, slug)).limit(1);
+  return row && row.published ? toEvent(row) : null;
 }
 
 export async function getAdjacentEvent(slug: string) {
   "use cache";
   cacheLife("days");
   cacheTag("events");
-  const index = events.findIndex((event) => event.slug === slug);
-  return index === -1 ? null : events[(index + 1) % events.length];
+  const all = await getEvents();
+  const index = all.findIndex((event) => event.slug === slug);
+  return index === -1 ? null : all[(index + 1) % all.length];
 }
 
 export async function getServices() {
   "use cache";
   cacheLife("days");
   cacheTag("services");
-  return services;
+  const rows = await getDb().select().from(services).orderBy(asc(services.position), asc(services.id));
+  return rows.map(toService);
 }
