@@ -19,7 +19,8 @@ export default async function SiteFooter() {
           <div className="md:col-span-5">
             <Logo tone="light" />
             <p className="mt-8 max-w-sm text-base leading-relaxed text-paper/60">
-              {site.tagline} Thoughtfully planned celebrations across {site.contact.region}.
+              A full-service event planning and styling studio creating weddings, birthdays and corporate
+              occasions across {site.contact.region}.
             </p>
           </div>
 

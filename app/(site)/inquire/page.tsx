@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  "Share a few details about your occasion.",
-  "We reply on WhatsApp, usually within a day.",
-  "We meet to shape the concept and plan.",
+  "Share a few details about your occasion. It takes about two minutes.",
+  "We reply on WhatsApp, usually within a day, to arrange a short call.",
+  "We send a tailored concept and proposal for you to refine.",
 ];
 
 export default function InquirePage() {
@@ -22,7 +22,7 @@ export default function InquirePage() {
       <PageHeader
         eyebrow="Start a conversation"
         title="Tell us about your celebration."
-        intro="The more you share, the better we can prepare. Only your name, phone and occasion are required."
+        intro="The more you share, the better we can prepare. Only your name, phone number and occasion are required; the rest can wait for our call."
       />
 
       <section className="section-y bg-paper-2">

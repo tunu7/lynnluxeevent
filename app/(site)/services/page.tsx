@@ -9,7 +9,7 @@ import { getServices } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Event planning, weddings, birthdays, corporate events and catering in Arunachal Pradesh by Lynn Luxe Event Studio.",
+    "Full-service event planning, wedding planning, birthday styling, corporate events and catering in Arunachal Pradesh by Lynn Luxe Event Studio.",
   alternates: { canonical: "/services" },
 };
 
@@ -20,8 +20,8 @@ export default async function ServicesPage() {
     <>
       <PageHeader
         eyebrow="Services"
-        title="Events, beautifully considered."
-        intro="Choose a single service or let us run the whole occasion. Every engagement starts with a conversation about what matters to you."
+        title="Services shaped around your occasion."
+        intro="Book a single service or let us handle the entire event. Either way, it starts with a conversation about what matters most to you."
       />
 
       <nav aria-label="Services" className="sticky top-18 z-40 border-b border-line bg-paper/90 backdrop-blur-md md:top-20">

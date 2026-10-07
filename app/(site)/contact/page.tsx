@@ -17,27 +17,27 @@ const channels: { icon: LucideIcon; label: string; value: string; href?: string;
     label: "Call",
     value: site.contact.phoneDisplay,
     href: `tel:${site.contact.phone}`,
-    note: "Speak with our team directly.",
+    note: "Speak directly with a planner.",
   },
   {
     icon: MessageCircle,
     label: "WhatsApp",
     value: "Chat with us",
     href: whatsappLink(`Hello ${site.shortName}, I'd like to plan an event.`),
-    note: "The quickest way to reach us.",
+    note: "Our fastest response, usually within a day.",
   },
   {
     icon: AtSign,
     label: "Instagram",
     value: site.contact.instagramHandle,
     href: site.contact.instagram,
-    note: "Recent work and behind the scenes.",
+    note: "Recent events and behind the scenes.",
   },
   {
     icon: MapPin,
     label: "Studio",
     value: `${site.contact.locality}, ${site.contact.region}`,
-    note: "Events across the state.",
+    note: "Planning events across the state.",
   },
 ];
 
@@ -46,9 +46,9 @@ export default function ContactPage() {
     <>
       <PageHeader
         eyebrow="Contact"
-        title="Let's talk about your event."
-        intro="Tell us a little about what you're planning and we'll get back to you with ideas and next steps."
-        action={<ButtonLink href="/inquire">Start an inquiry</ButtonLink>}
+        title="Let's start planning."
+        intro="Whether you have a date, a venue and a vision or just the beginnings of an idea, we'd love to hear from you."
+        action={<ButtonLink href="/inquire">Send an inquiry</ButtonLink>}
       />
 
       <section className="section-y">

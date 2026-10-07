@@ -12,11 +12,11 @@ export default function FeaturedWork({ events }: { events: PortfolioEvent[] }) {
     <section className="section-y">
       <div className="container-site">
         <SectionHeading
-          eyebrow="Selected work"
-          title="Moments we've created."
+          eyebrow="Portfolio"
+          title="Recent celebrations."
           action={
             <ButtonLink href="/portfolio" variant="text">
-              View portfolio
+              See the full portfolio
             </ButtonLink>
           }
         />

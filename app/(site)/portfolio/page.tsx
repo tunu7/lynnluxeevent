@@ -7,7 +7,7 @@ import { getEvents } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Portfolio",
-  description: "Celebrations, events and experiences created by Lynn Luxe Event Studio.",
+  description: "Weddings, birthdays, private celebrations and corporate events planned and styled by Lynn Luxe Event Studio in Arunachal Pradesh.",
   alternates: { canonical: "/portfolio" },
 };
 
@@ -18,8 +18,8 @@ export default async function PortfolioPage() {
     <>
       <PageHeader
         eyebrow="Portfolio"
-        title="Celebrations we've created."
-        intro="A selection of weddings, private celebrations and corporate occasions styled and delivered by our studio."
+        title="Our work, in moments."
+        intro="A look at recent weddings, private celebrations and corporate occasions, each one designed from scratch around the people it was for."
       />
 
       <section className="section-y">

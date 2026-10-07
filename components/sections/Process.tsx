@@ -3,20 +3,20 @@ import SectionHeading from "@/components/ui/SectionHeading";
 
 const steps = [
   {
-    title: "Listen",
-    text: "We begin with your ideas, your story and the feeling you want your event to create.",
+    title: "Consult",
+    text: "A relaxed conversation about the occasion, your guests, your budget and the feeling you want the day to have.",
   },
   {
     title: "Design",
-    text: "We transform your vision into a cohesive event concept with thoughtful visual details.",
+    text: "We shape a concept with mood, palette, décor and flow, and share a clear proposal for you to refine.",
   },
   {
-    title: "Detail",
-    text: "From décor to hospitality, we focus on the small things that make the experience feel special.",
+    title: "Plan",
+    text: "Venues, vendors, menus and timelines are booked and managed by us, with regular updates along the way.",
   },
   {
-    title: "Deliver",
-    text: "We coordinate the moving pieces and run the day, so you can be present in the moment.",
+    title: "Host",
+    text: "On the day our team sets up, runs the schedule and handles the unexpected. You simply arrive and enjoy.",
   },
 ];
 
@@ -27,8 +27,8 @@ export default function Process() {
         <SectionHeading
           tone="dark"
           eyebrow="How we work"
-          title="Great events don't happen by accident."
-          intro="Behind every beautiful celebration is thoughtful planning, creative direction and attention to detail."
+          title="A calm, clear process from first call to final toast."
+          intro="Four simple stages and one dedicated planner. You always know what's happening next, and you never carry the logistics alone."
         />
 
         <ol className="mt-16 grid gap-px overflow-hidden rounded-sm bg-paper/10 md:grid-cols-2 lg:grid-cols-4">

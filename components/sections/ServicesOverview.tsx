@@ -10,12 +10,12 @@ export default function ServicesOverview({ services }: { services: Service[] }) 
     <section className="section-y bg-paper-2">
       <div className="container-site">
         <SectionHeading
-          eyebrow="What we do"
-          title="One studio for every part of your occasion."
-          intro="Planning, design and hospitality under one roof — so nothing gets lost between vendors."
+          eyebrow="Services"
+          title="Everything your occasion needs, under one roof."
+          intro="Planning, design and hospitality from one dedicated team. One vision, one point of contact, nothing lost between vendors."
           action={
             <ButtonLink href="/services" variant="text" arrow>
-              All services
+              Explore services
             </ButtonLink>
           }
         />
@@ -45,9 +45,14 @@ export default function ServicesOverview({ services }: { services: Service[] }) 
             </Reveal>
           ))}
           <li className="flex flex-col justify-between gap-10 bg-ink p-8 text-paper md:p-10">
-            <p className="font-display text-3xl leading-tight">Not sure what you need yet?</p>
+            <div>
+              <p className="font-display text-3xl leading-tight">Not sure where to begin?</p>
+              <p className="mt-3 text-base leading-relaxed text-paper/60">
+                Tell us the occasion and we&apos;ll recommend the right level of support.
+              </p>
+            </div>
             <ButtonLink href="/inquire" variant="light" className="self-start">
-              Talk to us
+              Get in touch
             </ButtonLink>
           </li>
         </ul>

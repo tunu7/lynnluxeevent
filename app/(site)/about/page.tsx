@@ -9,22 +9,22 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Lynn Luxe Event Studio brings together thoughtful styling, refined details and seamless execution for celebrations across Arunachal Pradesh.",
+    "Meet Lynn Luxe Event Studio, a design-led event planning team in Arunachal Pradesh creating personal, beautifully run celebrations.",
   alternates: { canonical: "/about" },
 };
 
 const principles = [
   {
-    title: "Personal, not templated",
-    text: "Every event starts from your story. We design around the people, the place and the feeling you want to leave behind.",
+    title: "Personal, never templated",
+    text: "No two events we create look the same. We design around your people, your place and the feeling you want guests to leave with.",
   },
   {
     title: "Detail as a discipline",
-    text: "Lighting, textures, tablescapes, timing — the small decisions are what guests remember, so we treat each one with care.",
+    text: "Lighting, textures, tablescapes and timing. Guests remember the small decisions, so we give each one our full attention.",
   },
   {
-    title: "One accountable team",
-    text: "Planning, styling and hospitality are coordinated by one studio, so you have a single point of contact from first call to final farewell.",
+    title: "One team, fully accountable",
+    text: "Planning, styling and hospitality are run by one studio. You have a single point of contact from the first call to the final farewell.",
   },
 ];
 
@@ -33,8 +33,8 @@ export default function AboutPage() {
     <>
       <PageHeader
         eyebrow="About the studio"
-        title="We create moments that feel as beautiful as they look."
-        intro={`Based in ${site.contact.locality}, ${site.contact.region}, ${site.shortName} plans and styles celebrations of every scale.`}
+        title="We create moments that feel as good as they look."
+        intro={`${site.shortName} is a design-led event studio based in ${site.contact.locality}, planning and styling celebrations of every scale across ${site.contact.region}.`}
       />
 
       <section className="section-y">
@@ -52,13 +52,13 @@ export default function AboutPage() {
           <Reveal className="md:col-span-6 md:col-start-7" delay={120}>
             <p className="eyebrow text-accent">Our philosophy</p>
             <p className="mt-6 font-display text-3xl leading-snug md:text-4xl">
-              From intimate celebrations to statement occasions, we bring together thoughtful styling, refined
-              details and seamless execution.
+              Great events are part design, part logistics and part hospitality. We bring all three together
+              in one studio.
             </p>
             <p className="mt-6 text-base leading-relaxed text-muted">
-              The result is an experience that feels personal, elevated and unforgettable — for you and for
-              every guest who walks through the door. We handle the planning, coordination and details behind
-              your event so you can focus on enjoying the occasion.
+              We believe hosts deserve to enjoy their own celebrations. So we take
+              on the planning, coordination and the hundred small decisions behind every event, and give you
+              back the joy of being a guest at your own occasion.
             </p>
           </Reveal>
         </div>
@@ -66,7 +66,7 @@ export default function AboutPage() {
 
       <section className="section-y bg-paper-2">
         <div className="container-site">
-          <p className="eyebrow text-accent">What we believe</p>
+          <p className="eyebrow text-accent">What we stand for</p>
           <ul className="mt-12 grid gap-12 md:grid-cols-3 md:gap-10">
             {principles.map((item, i) => (
               <Reveal as="li" key={item.title} delay={i * 100} className="border-t border-ink/20 pt-8">

@@ -12,7 +12,7 @@
   --color-ink-2: #3a332c;
   --color-muted: #6d6358;
   --color-line: rgb(29 25 21 / 0.12);
-  --color-accent: #9a6b43;
+  --color-accent: #8a5d38;
   --color-accent-soft: #c9a27c;
   --color-night: #191512;
   --color-night-2: #241f1a;
@@ -147,5 +147,17 @@
   .animate-rise {
     animation: rise 1s var(--ease-out-soft) both;
     animation-delay: var(--rise-delay, 0ms);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee {
+    animation: marquee 40s linear infinite;
   }
 }

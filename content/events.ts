@@ -13,7 +13,7 @@ export const events: PortfolioEvent[] = [
     location: "Jollang, Arunachal Pradesh",
     year: "2026",
     summary:
-      "An atmospheric celebration designed around rich textures, elegant lighting and a bold visual identity.",
+      "An atmospheric birthday celebration built around rich textures, elegant lighting and a bold visual identity.",
     cover: "/images/events/velvet-grandeur/cover.jpg",
     gallery: [
       "/images/events/velvet-grandeur/01.jpg",
@@ -29,7 +29,7 @@ export const events: PortfolioEvent[] = [
     location: "Arunachal Pradesh",
     year: "2026",
     summary:
-      "A refined private celebration with carefully considered styling and intimate details.",
+      "A refined private celebration with carefully considered styling and intimate, personal details.",
     cover: "/images/events/elegant-celebration/cover.jpg",
     gallery: [
       "/images/events/elegant-celebration/01.jpg",
@@ -44,7 +44,7 @@ export const events: PortfolioEvent[] = [
     location: "Arunachal Pradesh",
     year: "2026",
     summary:
-      "A sophisticated corporate gathering combining elegant styling with a warm and welcoming atmosphere.",
+      "A sophisticated corporate evening that paired elegant styling with a warm, welcoming atmosphere.",
     cover: "/images/events/golden-evening/cover.jpg",
     gallery: [
       "/images/events/golden-evening/01.jpg",

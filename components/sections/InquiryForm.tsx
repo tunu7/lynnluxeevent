@@ -135,13 +135,13 @@ export default function InquiryForm() {
           rows={5}
           maxLength={2000}
           className={`${field} resize-y`}
-          placeholder="Theme, mood, must-haves, budget range…"
+          placeholder="The mood you have in mind, colours, must-haves, an approximate budget…"
         />
       </Field>
 
       <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted">
-          Submitting opens WhatsApp with your details filled in and shares a copy with our team.
+          This opens WhatsApp with your details filled in, ready to send. A copy also goes straight to our team.
         </p>
         <button
           type="submit"

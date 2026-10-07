@@ -4,9 +4,9 @@ export const services: Service[] = [
   {
     slug: "event-planning",
     title: "Event Planning",
-    summary: "From first concept to final farewell, every moving part handled.",
+    summary: "Every moving part, from first concept to final farewell, handled for you.",
     description:
-      "We take care of the planning, coordination and details behind your event so you can focus on enjoying the occasion.",
+      "Our full-service planning covers the concept, budget, vendors, timeline and on-the-day running of your event. You get one dedicated planner and the freedom to enjoy the occasion as a guest.",
     features: [
       "Event concept & planning",
       "Vendor coordination",
@@ -19,9 +19,9 @@ export const services: Service[] = [
   {
     slug: "weddings",
     title: "Weddings",
-    summary: "Wedding experiences designed around your story.",
+    summary: "Weddings that feel unmistakably yours.",
     description:
-      "Your wedding should feel personal. We create celebrations that reflect your personality, your story and the atmosphere you want your guests to remember.",
+      "From the first venue visit to the last dance, we design weddings around your story, your traditions and the atmosphere you want to share with the people you love, then make sure every moment runs to plan.",
     features: [
       "Wedding planning",
       "Venue coordination",
@@ -34,9 +34,9 @@ export const services: Service[] = [
   {
     slug: "birthdays",
     title: "Birthdays",
-    summary: "From intimate gatherings to statement celebrations.",
+    summary: "Intimate gatherings and statement parties, styled to perfection.",
     description:
-      "Whether it is an intimate birthday or a larger celebration, we design the details that turn an ordinary gathering into an experience.",
+      "Whether it's a milestone birthday, a surprise party or an elegant dinner, we develop a theme and style every detail so the evening feels like an occasion from the moment guests arrive.",
     features: [
       "Theme development",
       "Venue styling",
@@ -49,9 +49,9 @@ export const services: Service[] = [
   {
     slug: "corporate-events",
     title: "Corporate Events",
-    summary: "Polished events that carry your brand with care.",
+    summary: "Polished events that represent your brand well.",
     description:
-      "We help businesses create polished and memorable experiences for launches, celebrations, gatherings and corporate occasions.",
+      "Launches, annual dinners, conferences and team celebrations, delivered on time and on brand. We manage the guest experience end to end so your team can focus on your guests.",
     features: [
       "Corporate event planning",
       "Brand integration",
@@ -64,9 +64,9 @@ export const services: Service[] = [
   {
     slug: "catering",
     title: "Catering",
-    summary: "Thoughtful hospitality with beautiful presentation.",
+    summary: "Generous food and warm hospitality, beautifully presented.",
     description:
-      "Food is part of the experience. Our catering service focuses on presentation, hospitality and creating a memorable dining experience for your guests.",
+      "Food is often what guests remember most. We plan menus around your occasion and your guests, present every dish with care and provide attentive service from the first course to dessert.",
     features: [
       "Event catering",
       "Menu planning",

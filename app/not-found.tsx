@@ -12,7 +12,7 @@ export default function NotFound() {
             <p className="eyebrow text-accent">Page not found</p>
             <h1 className="mt-5 max-w-3xl text-5xl leading-[1.02] md:text-7xl">This page has left the party.</h1>
             <p className="mt-6 max-w-md text-lg text-muted">
-              The link may be out of date. Let&apos;s get you back to something beautiful.
+              The link may be out of date or the page may have moved. Let&apos;s get you back to the celebration.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <ButtonLink href="/">Back home</ButtonLink>

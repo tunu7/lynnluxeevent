@@ -1,4 +1,6 @@
 import Hero from "@/components/sections/Hero";
+import Intro from "@/components/sections/Intro";
+import Faq from "@/components/sections/Faq";
 import ServicesOverview from "@/components/sections/ServicesOverview";
 import FeaturedWork from "@/components/sections/FeaturedWork";
 import Process from "@/components/sections/Process";
@@ -11,9 +13,11 @@ export default async function HomePage() {
   return (
     <>
       <Hero feature={events[0]} />
+      <Intro />
       <ServicesOverview services={services} />
       <FeaturedWork events={events} />
       <Process />
+      <Faq />
       <CtaBand />
     </>
   );

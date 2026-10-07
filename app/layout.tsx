@@ -19,7 +19,7 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — Event planning in Arunachal Pradesh`,
+    default: `${site.name} | Event Planning & Styling in Arunachal Pradesh`,
     template: `%s · ${site.name}`,
   },
   description: site.description,

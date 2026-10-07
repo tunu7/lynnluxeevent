@@ -16,9 +16,9 @@ const phoneE164 = "+917085262635";
 export const site = {
   name: "Lynn Luxe Event Studio",
   shortName: "Lynn Luxe",
-  tagline: "Crafting moments, creating memories.",
+  tagline: "Celebrations, beautifully composed.",
   description:
-    "Lynn Luxe Event Studio plans, designs and delivers weddings, birthdays, corporate events and private celebrations across Arunachal Pradesh.",
+    "Lynn Luxe Event Studio is a full-service event planning and styling studio in Arunachal Pradesh, creating weddings, birthdays, corporate events and private celebrations with care and polish.",
   url: resolveSiteUrl(),
   locale: "en_IN",
 

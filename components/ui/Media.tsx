@@ -45,10 +45,12 @@ export default function Media({
   if (!hasLocalFile(src)) {
     return (
       <div className={frame} role="img" aria-label={alt}>
-        <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_20%_10%,var(--color-paper-2),transparent_60%),radial-gradient(90%_90%_at_90%_100%,color-mix(in_oklab,var(--color-accent-soft)_45%,transparent),transparent_70%)]" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-ink/35">
+        <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_15%_0%,var(--color-paper-2),transparent_60%),radial-gradient(100%_90%_at_95%_100%,color-mix(in_oklab,var(--color-accent-soft)_55%,transparent),transparent_70%),linear-gradient(160deg,var(--color-paper-3),color-mix(in_oklab,var(--color-accent-soft)_35%,var(--color-paper-3)))]" />
+        <div className="absolute inset-4 rounded-[inherit] border border-paper/60 md:inset-6" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-ink/40">
           <span className="font-display text-5xl italic md:text-6xl">LL</span>
-          {label ? <span className="eyebrow text-[0.65rem]">{label}</span> : null}
+          <span aria-hidden className="h-px w-10 bg-ink/25" />
+          {label ? <span className="eyebrow px-6 text-center text-[0.65rem]">{label}</span> : null}
         </div>
       </div>
     );
