@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarHeart, Images, LayoutDashboard, Sparkles } from "lucide-react";
+import { CalendarDays, CalendarHeart, Images, LayoutDashboard, Sparkles } from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/inquiries", label: "Inquiries", icon: CalendarHeart },
+  { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/admin/portfolio", label: "Portfolio", icon: Images },
   { href: "/admin/services", label: "Services", icon: Sparkles },
 ];

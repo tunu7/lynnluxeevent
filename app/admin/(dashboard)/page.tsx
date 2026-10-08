@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { AlertCircle, ArrowRight } from "lucide-react";
 import PageTitle from "@/components/admin/PageTitle";
 import StatusBadge, { statusLabels } from "@/components/admin/StatusBadge";
 import { buttons, card } from "@/components/admin/styles";
@@ -13,12 +13,19 @@ export const metadata: Metadata = { title: "Overview" };
 export default async function OverviewPage() {
   const data = await getOverview();
   const maxType = Math.max(1, ...data.byType.map((row) => row.total));
+  const maxMonth = Math.max(1, ...data.monthly.map((row) => row.total));
+  const monthLabel = (key: string) =>
+    new Intl.DateTimeFormat("en-IN", { month: "short", timeZone: "UTC" }).format(new Date(`${key}-01T00:00:00Z`));
 
   const stats = [
     { label: "New inquiries", value: data.statusCounts.new, href: "/admin/inquiries?status=new" },
     { label: "In conversation", value: data.statusCounts.contacted, href: "/admin/inquiries?status=contacted" },
     { label: "Booked", value: data.statusCounts.booked, href: "/admin/inquiries?status=booked" },
-    { label: "Inquiries · last 30 days", value: data.last30Days, href: "/admin/inquiries" },
+    {
+      label: "Conversion rate",
+      value: data.conversionRate === null ? "—" : `${data.conversionRate}%`,
+      href: "/admin/inquiries?status=booked",
+    },
   ];
 
   return (
@@ -27,9 +34,14 @@ export default async function OverviewPage() {
         title="Overview"
         description="A snapshot of the studio's pipeline and website content."
         action={
-          <Link href="/admin/portfolio/new" className={buttons.primary}>
-            Add portfolio event
-          </Link>
+          <>
+            <Link href="/admin/inquiries/new" className={buttons.secondary}>
+              Add inquiry
+            </Link>
+            <Link href="/admin/portfolio/new" className={buttons.primary}>
+              Add portfolio event
+            </Link>
+          </>
         }
       />
 
@@ -44,43 +56,93 @@ export default async function OverviewPage() {
         ))}
       </ul>
 
+      {data.waiting.length ? (
+        <section className="mt-6 rounded-sm border border-accent/30 bg-accent/5 p-5">
+          <h2 className="flex items-center gap-2 text-xl">
+            <AlertCircle aria-hidden size={18} className="text-accent" />
+            Waiting for a reply
+          </h2>
+          <p className="mt-1 text-sm text-muted">
+            These inquiries have been marked &ldquo;New&rdquo; for over a day. A quick message keeps them warm.
+          </p>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {data.waiting.map((inquiry) => (
+              <li key={inquiry.id}>
+                <Link
+                  href={`/admin/inquiries/${inquiry.id}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-3.5 py-1.5 text-sm hover:border-ink/30"
+                >
+                  <span className="font-semibold">{inquiry.name}</span>
+                  <span className="text-muted">
+                    {inquiry.eventType} · {formatRelative(inquiry.createdAt)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <section className={`${card} lg:col-span-2`}>
-          <header className="flex items-center justify-between border-b border-line px-5 py-4">
-            <h2 className="text-xl">Latest inquiries</h2>
-            <Link href="/admin/inquiries" className="inline-flex items-center gap-1 text-sm font-semibold hover:text-accent">
-              View all <ArrowRight aria-hidden size={14} />
-            </Link>
-          </header>
-          {data.recent.length ? (
-            <ul className="divide-y divide-line">
-              {data.recent.map((inquiry) => (
-                <li key={inquiry.id}>
-                  <Link
-                    href={`/admin/inquiries/${inquiry.id}`}
-                    className="flex items-center justify-between gap-4 px-5 py-3.5 hover:bg-paper/60"
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate font-semibold">{inquiry.name}</span>
-                      <span className="block truncate text-sm text-muted">
-                        {inquiry.eventType}
-                        {inquiry.eventDate ? ` · ${formatDate(inquiry.eventDate)}` : ""}
+        <div className="space-y-6 lg:col-span-2">
+          <section className={card}>
+            <header className="flex items-center justify-between border-b border-line px-5 py-4">
+              <h2 className="text-xl">Latest inquiries</h2>
+              <Link href="/admin/inquiries" className="inline-flex items-center gap-1 text-sm font-semibold hover:text-accent">
+                View all <ArrowRight aria-hidden size={14} />
+              </Link>
+            </header>
+            {data.recent.length ? (
+              <ul className="divide-y divide-line">
+                {data.recent.map((inquiry) => (
+                  <li key={inquiry.id}>
+                    <Link
+                      href={`/admin/inquiries/${inquiry.id}`}
+                      className="flex items-center justify-between gap-4 px-5 py-3.5 hover:bg-paper/60"
+                    >
+                      <span className="min-w-0">
+                        <span className="block truncate font-semibold">{inquiry.name}</span>
+                        <span className="block truncate text-sm text-muted">
+                          {inquiry.eventType}
+                          {inquiry.eventDate ? ` · ${formatDate(inquiry.eventDate)}` : ""}
+                        </span>
                       </span>
-                    </span>
-                    <span className="flex shrink-0 flex-col items-end gap-1">
-                      <StatusBadge status={inquiry.status} />
-                      <span className="text-xs text-muted">{formatRelative(inquiry.createdAt)}</span>
-                    </span>
-                  </Link>
+                      <span className="flex shrink-0 flex-col items-end gap-1">
+                        <StatusBadge status={inquiry.status} />
+                        <span className="text-xs text-muted">{formatRelative(inquiry.createdAt)}</span>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="px-5 py-10 text-center text-sm text-muted">
+                No inquiries yet. Submissions from the website&apos;s inquiry form will appear here.
+              </p>
+            )}
+          </section>
+
+          <section className={`${card} p-5`}>
+            <div className="flex items-baseline justify-between gap-4">
+              <h2 className="text-xl">Inquiries per month</h2>
+              <p className="text-sm text-muted">
+                <span className="font-semibold tabular-nums text-ink">{data.last30Days}</span> in the last 30 days
+              </p>
+            </div>
+            <ol className="mt-6 grid h-44 grid-cols-6 items-end gap-3">
+              {data.monthly.map((row) => (
+                <li key={row.month} className="flex h-full flex-col items-center justify-end gap-2">
+                  <span className="text-xs font-semibold tabular-nums">{row.total}</span>
+                  <div
+                    className="w-full max-w-12 rounded-t-sm bg-accent/80"
+                    style={{ height: `${Math.max(2, (row.total / maxMonth) * 100)}%` }}
+                  />
+                  <span className="text-xs text-muted">{monthLabel(row.month)}</span>
                 </li>
               ))}
-            </ul>
-          ) : (
-            <p className="px-5 py-10 text-center text-sm text-muted">
-              No inquiries yet. Submissions from the website&apos;s inquiry form will appear here.
-            </p>
-          )}
-        </section>
+            </ol>
+          </section>
+        </div>
 
         <div className="space-y-6">
           <section className={card}>

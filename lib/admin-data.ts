@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, count, desc, eq, gte, ilike, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, lt, lte, ne, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { events, inquiries, inquiryStatuses, services, type InquiryStatus } from "@/db/schema";
 import { requireAdmin } from "./auth";
@@ -21,8 +21,14 @@ export async function getOverview() {
   const db = getDb();
   const today = new Date().toISOString().slice(0, 10);
   const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setUTCDate(1);
+  sixMonthsAgo.setUTCHours(0, 0, 0, 0);
+  sixMonthsAgo.setUTCMonth(sixMonthsAgo.getUTCMonth() - 5);
+  const month = sql<string>`to_char(${inquiries.createdAt} at time zone 'Asia/Kolkata', 'YYYY-MM')`;
 
-  const [byStatus, [recentCount], [eventCount], [serviceCount], recent, upcoming, byType] = await Promise.all([
+  const [byStatus, [recentCount], [eventCount], [serviceCount], recent, upcoming, byType, waiting, byMonth] = await Promise.all([
     db.select({ status: inquiries.status, total: count() }).from(inquiries).groupBy(inquiries.status),
     db.select({ total: count() }).from(inquiries).where(gte(inquiries.createdAt, monthAgo)),
     db.select({ total: count() }).from(events),
@@ -39,14 +45,44 @@ export async function getOverview() {
       .from(inquiries)
       .groupBy(inquiries.eventType)
       .orderBy(desc(count())),
+    // New inquiries nobody has replied to for over a day.
+    db
+      .select()
+      .from(inquiries)
+      .where(and(eq(inquiries.status, "new"), lt(inquiries.createdAt, dayAgo)))
+      .orderBy(asc(inquiries.createdAt))
+      .limit(5),
+    db
+      .select({ month, total: count() })
+      .from(inquiries)
+      .where(gte(inquiries.createdAt, sixMonthsAgo))
+      .groupBy(month),
   ]);
+
+  const monthKeys = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(sixMonthsAgo);
+    d.setUTCMonth(d.getUTCMonth() + i);
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+  });
+  const monthly = monthKeys.map((key) => ({
+    month: key,
+    total: byMonth.find((row) => row.month === key)?.total ?? 0,
+  }));
 
   const statusCounts = Object.fromEntries(inquiryStatuses.map((s) => [s, 0])) as Record<InquiryStatus, number>;
   for (const row of byStatus) statusCounts[row.status] = row.total;
 
+  const totalInquiries = byStatus.reduce((sum, row) => sum + row.total, 0);
+  const won = statusCounts.booked + statusCounts.completed;
+  // Only count inquiries that reached an outcome, so open leads don't drag the rate down.
+  const decided = won + statusCounts.closed;
+
   return {
     statusCounts,
-    totalInquiries: byStatus.reduce((sum, row) => sum + row.total, 0),
+    totalInquiries,
+    conversionRate: decided ? Math.round((won / decided) * 100) : null,
+    waiting,
+    monthly,
     last30Days: recentCount.total,
     eventCount: eventCount.total,
     serviceCount: serviceCount.total,
@@ -99,6 +135,16 @@ export async function getInquiries({
   for (const row of byStatus) statusCounts[row.status] = row.total;
 
   return { rows, total, statusCounts, pages: Math.max(1, Math.ceil(total / INQUIRIES_PAGE_SIZE)) };
+}
+
+/** Inquiries with an event date in [from, to] (YYYY-MM-DD), excluding closed ones. */
+export async function getCalendarInquiries(from: string, to: string) {
+  await requireAdmin();
+  return getDb()
+    .select()
+    .from(inquiries)
+    .where(and(gte(inquiries.eventDate, from), lte(inquiries.eventDate, to), ne(inquiries.status, "closed")))
+    .orderBy(asc(inquiries.eventDate), asc(inquiries.createdAt));
 }
 
 export async function getAllInquiries() {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MessageCircle, Phone } from "lucide-react";
+import { ArrowLeft, MessageCircle, Pencil, Phone, Send } from "lucide-react";
 import StatusBadge from "@/components/admin/StatusBadge";
 import StatusSelect from "@/components/admin/StatusSelect";
 import SubmitButton from "@/components/admin/SubmitButton";
@@ -18,10 +18,37 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
   const inquiry = Number.isSafeInteger(Number(id)) ? await getInquiry(Number(id)) : null;
   if (!inquiry) notFound();
 
-  const whatsappNumber = inquiry.phone.replace(/[^\d]/g, "").replace(/^0+/, "");
-  const whatsapp = `https://wa.me/${whatsappNumber.length === 10 ? `91${whatsappNumber}` : whatsappNumber}?text=${encodeURIComponent(
+  const digits = inquiry.phone.replace(/[^\d]/g, "").replace(/^0+/, "");
+  const waNumber = digits.length === 10 ? `91${digits}` : digits;
+  const wa = (message: string) => `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+  const whatsapp = wa(
     `Hello ${inquiry.name}, this is ${site.shortName} following up on your ${inquiry.eventType.toLowerCase()} inquiry.`,
-  )}`;
+  );
+
+  const occasion = inquiry.eventType.toLowerCase();
+  const onDate = inquiry.eventDate ? ` on ${formatDate(inquiry.eventDate)}` : "";
+  const templates = [
+    {
+      label: "First reply",
+      text: `Hello ${inquiry.name}, thank you for reaching out to ${site.name} about your ${occasion}${onDate}. We'd love to help! When would be a good time for a quick call to talk through your ideas?`,
+    },
+    {
+      label: "Follow up",
+      text: `Hello ${inquiry.name}, just checking in on your ${occasion} plans. Are you still looking for help with the event? We're happy to answer any questions.`,
+    },
+    {
+      label: "Proposal sent",
+      text: `Hello ${inquiry.name}, we've put together a concept and proposal for your ${occasion}. Please take a look and let us know your thoughts. We're happy to adjust anything.`,
+    },
+    {
+      label: "Booking confirmed",
+      text: `Hello ${inquiry.name}, we're delighted to confirm your ${occasion}${onDate} with ${site.name}. We'll be in touch shortly with the next steps.`,
+    },
+    {
+      label: "Thank you",
+      text: `Hello ${inquiry.name}, thank you for letting us be part of your ${occasion}. It was a pleasure! We'd love to hear your feedback, and do tag us on Instagram ${site.contact.instagramHandle}.`,
+    },
+  ];
 
   const details: [string, string][] = [
     ["Occasion", inquiry.eventType],
@@ -56,6 +83,10 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
             <Phone aria-hidden size={15} />
             Call
           </a>
+          <Link href={`/admin/inquiries/${inquiry.id}/edit`} className={buttons.secondary}>
+            <Pencil aria-hidden size={15} />
+            Edit
+          </Link>
         </div>
       </div>
 
@@ -105,6 +136,29 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
             <StatusSelect id={inquiry.id} status={inquiry.status} />
             <p className="mt-3 text-xs leading-relaxed text-muted">
               Booked inquiries with a future date appear under &ldquo;Upcoming&rdquo; on the overview.
+            </p>
+          </section>
+
+          <section className={`${card} p-6`}>
+            <h2 className={label}>Quick WhatsApp messages</h2>
+            <ul className="-mx-2 mt-1">
+              {templates.map((template) => (
+                <li key={template.label}>
+                  <a
+                    href={wa(template.text)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={template.text}
+                    className="flex items-center justify-between gap-3 rounded-sm px-2 py-2 text-sm hover:bg-ink/5"
+                  >
+                    {template.label}
+                    <Send aria-hidden size={14} className="shrink-0 text-muted" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              Opens WhatsApp with the message filled in, so you can edit it before sending.
             </p>
           </section>
 

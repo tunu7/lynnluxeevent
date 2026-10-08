@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Download, Search } from "lucide-react";
+import { Download, Plus, Search } from "lucide-react";
 import PageTitle from "@/components/admin/PageTitle";
 import StatusBadge, { statusLabels } from "@/components/admin/StatusBadge";
 import { buttons, card, field } from "@/components/admin/styles";
@@ -39,10 +39,16 @@ export default async function InquiriesPage({ searchParams }: PageProps<"/admin/
         title="Inquiries"
         description="Every submission from the website's inquiry form."
         action={
-          <a href="/admin/inquiries/export" download className={buttons.secondary}>
-            <Download aria-hidden size={15} />
-            Export CSV
-          </a>
+          <>
+            <a href="/admin/inquiries/export" download className={buttons.secondary}>
+              <Download aria-hidden size={15} />
+              Export CSV
+            </a>
+            <Link href="/admin/inquiries/new" className={buttons.primary}>
+              <Plus aria-hidden size={15} />
+              Add inquiry
+            </Link>
+          </>
         }
       />
 
