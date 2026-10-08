@@ -25,6 +25,13 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
 
+  async redirects() {
+    return [
+      { source: "/login", destination: "/admin", permanent: false },
+      { source: "/dashboard", destination: "/admin", permanent: false },
+    ];
+  },
+
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
+import { breadcrumbs, pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/ui/JsonLd";
 import { AtSign, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import PageHeader from "@/components/ui/PageHeader";
 import ButtonLink from "@/components/ui/ButtonLink";
 import { site, whatsappLink } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: `Call, WhatsApp or message ${site.name} to start planning your event.`,
-  alternates: { canonical: "/contact" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Contact Us",
+  description: `Call ${site.contact.phoneDisplay}, WhatsApp or message ${site.name} to start planning your wedding, birthday or corporate event in Arunachal Pradesh.`,
+  path: "/contact",
+});
 
 const channels: { icon: LucideIcon; label: string; value: string; href?: string; note: string }[] = [
   {
@@ -82,6 +84,7 @@ export default function ContactPage() {
           })}
         </ul>
       </section>
+      <JsonLd data={breadcrumbs([{ name: "Contact", path: "/contact" }])} />
     </>
   );
 }

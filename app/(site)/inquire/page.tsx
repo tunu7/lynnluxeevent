@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { breadcrumbs, pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/ui/JsonLd";
 import { Suspense } from "react";
 import PageHeader from "@/components/ui/PageHeader";
 import InquiryForm from "@/components/sections/InquiryForm";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Plan your event",
-  description: `Tell ${site.name} about your celebration and we'll be in touch with ideas and next steps.`,
-  alternates: { canonical: "/inquire" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Plan Your Event",
+  description: `Tell ${site.name} about your wedding, birthday or corporate event in Arunachal Pradesh. We reply on WhatsApp, usually within a day, with ideas and next steps.`,
+  path: "/inquire",
+});
 
 const steps = [
   "Share a few details about your occasion. It takes about two minutes.",
@@ -55,6 +57,7 @@ export default function InquirePage() {
           </div>
         </div>
       </section>
+      <JsonLd data={breadcrumbs([{ name: "Plan your event", path: "/inquire" }])} />
     </>
   );
 }

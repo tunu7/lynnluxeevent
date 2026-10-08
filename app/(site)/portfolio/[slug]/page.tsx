@@ -9,6 +9,7 @@ import ButtonLink from "@/components/ui/ButtonLink";
 import CtaBand from "@/components/sections/CtaBand";
 import { getAdjacentEvent, getEvent, getEvents } from "@/lib/content";
 import { site } from "@/lib/site";
+import { breadcrumbs, pageMetadata } from "@/lib/seo";
 
 export async function generateStaticParams() {
   const events = await getEvents();
@@ -20,12 +21,14 @@ export async function generateMetadata({ params }: PageProps<"/portfolio/[slug]"
   const event = await getEvent(slug);
   if (!event) return {};
 
-  return {
-    title: event.title,
+  return pageMetadata({
+    title: `${event.title} | ${event.category} in ${event.location}`,
     description: event.summary,
-    alternates: { canonical: `/portfolio/${event.slug}` },
-    openGraph: { title: event.title, description: event.summary, type: "article" },
-  };
+    path: `/portfolio/${event.slug}`,
+    // Only uploaded (Blob) photos are guaranteed to exist; local paths may still be placeholders.
+    image: event.cover.startsWith("https://") ? event.cover : undefined,
+    type: "article",
+  });
 }
 
 export default async function EventPage({ params }: PageProps<"/portfolio/[slug]">) {
@@ -145,9 +148,15 @@ export default async function EventPage({ params }: PageProps<"/portfolio/[slug]
           genre: event.category,
           dateCreated: event.year,
           locationCreated: event.location,
-          image: new URL(event.cover, site.url).toString(),
+          ...(event.cover.startsWith("https://") ? { image: event.cover } : {}),
           creator: { "@type": "Organization", name: site.name, url: site.url },
         }}
+      />
+      <JsonLd
+        data={breadcrumbs([
+          { name: "Portfolio", path: "/portfolio" },
+          { name: event.title, path: `/portfolio/${event.slug}` },
+        ])}
       />
     </>
   );

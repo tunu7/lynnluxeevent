@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { absoluteUrl, breadcrumbs, pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/ui/JsonLd";
+import { site } from "@/lib/site";
 import { Check } from "lucide-react";
 import ButtonLink from "@/components/ui/ButtonLink";
 import PageHeader from "@/components/ui/PageHeader";
@@ -6,12 +9,12 @@ import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/sections/CtaBand";
 import { getServices } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Services",
+export const metadata: Metadata = pageMetadata({
+  title: "Event Planning, Wedding & Catering Services",
   description:
-    "Full-service event planning, wedding planning, birthday styling, corporate events and catering in Arunachal Pradesh by Lynn Luxe Event Studio.",
-  alternates: { canonical: "/services" },
-};
+    "Full-service event planning, wedding planning, birthday décor, corporate events and catering in Itanagar and across Arunachal Pradesh. Book one service or the whole occasion.",
+  path: "/services",
+});
 
 export default async function ServicesPage() {
   const services = await getServices();
@@ -77,6 +80,25 @@ export default async function ServicesPage() {
       </div>
 
       <CtaBand />
+      <JsonLd data={breadcrumbs([{ name: "Services", path: "/services" }])} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: services.map((service, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Service",
+              name: service.title,
+              description: service.description,
+              url: absoluteUrl(`/services#${service.slug}`),
+              areaServed: { "@type": "State", name: site.contact.region },
+              provider: { "@id": `${absoluteUrl("/")}#organization` },
+            },
+          })),
+        }}
+      />
     </>
   );
 }

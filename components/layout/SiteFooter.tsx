@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cacheLife } from "next/cache";
+import { LockKeyhole } from "lucide-react";
 import { site } from "@/lib/site";
 import { getServices } from "@/lib/content";
 import Logo from "./Logo";
@@ -67,8 +68,19 @@ export default async function SiteFooter() {
           <span>
             © {year} {site.name}
           </span>
-          <span>
-            {site.contact.locality}, {site.contact.region}
+          <span className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <span>
+              {site.contact.locality}, {site.contact.region}
+            </span>
+            <Link
+              href="/admin"
+              rel="nofollow"
+              prefetch={false}
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-paper"
+            >
+              <LockKeyhole aria-hidden size={13} strokeWidth={1.75} />
+              Admin login
+            </Link>
           </span>
         </div>
       </div>

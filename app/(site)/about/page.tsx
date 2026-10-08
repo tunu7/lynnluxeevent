@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { breadcrumbs, pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/ui/JsonLd";
 import PageHeader from "@/components/ui/PageHeader";
 import Media from "@/components/ui/Media";
 import Reveal from "@/components/ui/Reveal";
@@ -6,12 +8,12 @@ import Process from "@/components/sections/Process";
 import CtaBand from "@/components/sections/CtaBand";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "About",
+export const metadata: Metadata = pageMetadata({
+  title: "About Our Event Planning Studio",
   description:
-    "Meet Lynn Luxe Event Studio, a design-led event planning team in Arunachal Pradesh creating personal, beautifully run celebrations.",
-  alternates: { canonical: "/about" },
-};
+    "Meet Lynn Luxe Event Studio, a design-led event planning and styling team based in Jollang, creating personal, beautifully run celebrations across Arunachal Pradesh.",
+  path: "/about",
+});
 
 const principles = [
   {
@@ -80,6 +82,7 @@ export default function AboutPage() {
 
       <Process />
       <CtaBand />
+      <JsonLd data={breadcrumbs([{ name: "About", path: "/about" }])} />
     </>
   );
 }

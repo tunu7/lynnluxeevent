@@ -21,16 +21,17 @@ export default function Hero({ feature }: { feature?: PortfolioEvent }) {
       />
       <div className="container-site relative grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-7">
-          <p className="eyebrow animate-rise flex items-center gap-3 text-accent">
-            <span aria-hidden className="h-px w-8 bg-accent/60" />
-            Luxury event planning &amp; styling · {site.contact.region}
-          </p>
-
-          <h1
-            className="animate-rise mt-7 text-[clamp(3rem,7.6vw,6.5rem)] leading-[0.98]"
-            style={rise(80)}
-          >
-            Celebrations, <em className="text-accent">beautifully</em> composed.
+          <h1>
+            <span className="eyebrow animate-rise flex items-center gap-3 text-accent">
+              <span aria-hidden className="h-px w-8 bg-accent/60" />
+              Luxury event planning &amp; styling in {site.contact.region}
+            </span>
+            <span
+              className="animate-rise mt-7 block text-[clamp(3rem,7.6vw,6.5rem)] leading-[0.98]"
+              style={rise(80)}
+            >
+              Celebrations, <em className="text-accent">beautifully</em> composed.
+            </span>
           </h1>
 
           <p

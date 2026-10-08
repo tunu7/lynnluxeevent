@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
+import { breadcrumbs, pageMetadata } from "@/lib/seo";
+import JsonLd from "@/components/ui/JsonLd";
 import PageHeader from "@/components/ui/PageHeader";
 import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/sections/CtaBand";
 import EventCard from "@/components/sections/EventCard";
 import { getEvents } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Weddings, birthdays, private celebrations and corporate events planned and styled by Lynn Luxe Event Studio in Arunachal Pradesh.",
-  alternates: { canonical: "/portfolio" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Portfolio: Weddings, Birthdays & Corporate Events",
+  description:
+    "See weddings, birthday celebrations, private parties and corporate events planned and styled by Lynn Luxe Event Studio in Arunachal Pradesh.",
+  path: "/portfolio",
+});
 
 export default async function PortfolioPage() {
   const events = await getEvents();
@@ -37,6 +40,7 @@ export default async function PortfolioPage() {
       </section>
 
       <CtaBand title="Planning your own celebration?" />
+      <JsonLd data={breadcrumbs([{ name: "Portfolio", path: "/portfolio" }])} />
     </>
   );
 }
