@@ -3,15 +3,18 @@ import { Suspense } from "react";
 import { ArrowUpRight, LogOut } from "lucide-react";
 import Logo from "@/components/layout/Logo";
 import AdminNav, { NavLinks } from "@/components/admin/AdminNav";
+import { getSiteContent } from "@/lib/site-content";
 import { logout } from "../auth-actions";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { brand } = await getSiteContent();
+
   return (
     <div className="flex min-h-dvh flex-col bg-paper-2 lg:flex-row">
       <aside className="bg-night text-paper lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-64 lg:shrink-0 lg:flex-col">
         <div className="flex items-center justify-between px-5 pb-3 pt-5 lg:pb-8 lg:pt-7">
           <Link href="/admin" aria-label="Dashboard home">
-            <Logo tone="light" />
+            <Logo brand={brand} tone="light" />
           </Link>
         </div>
         <div className="px-3 pb-3 lg:flex-1">

@@ -4,10 +4,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
-import { site } from "@/lib/site";
+import type { SiteContent } from "@/lib/site-content-schema";
 import Logo from "./Logo";
 
-export default function SiteHeader() {
+export default function SiteHeader({
+  brand,
+  nav,
+  contact,
+  tel,
+}: {
+  brand: SiteContent["brand"];
+  nav: SiteContent["nav"];
+  contact: SiteContent["contact"];
+  tel: string;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -30,7 +40,7 @@ export default function SiteHeader() {
     };
   }, [open]);
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = (href: string) => (href === "/" ? pathname === href : pathname === href || pathname.startsWith(`${href}/`));
   const close = () => setOpen(false);
 
   return (
@@ -42,12 +52,12 @@ export default function SiteHeader() {
       }`}
     >
       <div className="container-site flex h-18 items-center justify-between md:h-20">
-        <Link href="/" onClick={close} aria-label={`${site.name} home`}>
-          <Logo />
+        <Link href="/" onClick={close} aria-label={`${brand.name} home`}>
+          <Logo brand={brand} />
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
-          {site.nav.map((link) => (
+          {nav.items.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -61,7 +71,7 @@ export default function SiteHeader() {
             href="/inquire"
             className="ml-4 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-ink-2"
           >
-            Plan your event
+            {nav.ctaLabel}
             <ArrowUpRight aria-hidden size={15} />
           </Link>
         </nav>
@@ -85,7 +95,7 @@ export default function SiteHeader() {
       >
         <nav aria-label="Mobile" className="container-site flex h-full flex-col pb-8 pt-6">
           <ul className="divide-y divide-line">
-            {[{ label: "Home", href: "/" }, ...site.nav].map((link) => (
+            {(nav.items.some((link) => link.href === "/") ? nav.items : [{ label: "Home", href: "/" }, ...nav.items]).map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
@@ -106,15 +116,15 @@ export default function SiteHeader() {
               onClick={close}
               className="flex w-full items-center justify-between rounded-full bg-ink px-6 py-4 text-sm font-semibold text-paper"
             >
-              Plan your event
+              {nav.ctaLabel}
               <ArrowUpRight aria-hidden size={17} />
             </Link>
             <p className="flex justify-between text-sm text-muted">
               <span>
-                {site.contact.locality}, {site.contact.region}
+                {contact.locality}, {contact.region}
               </span>
-              <a href={`tel:${site.contact.phone}`} className="hover:text-ink">
-                {site.contact.phoneDisplay}
+              <a href={tel} className="hover:text-ink">
+                {contact.phoneDisplay}
               </a>
             </p>
           </div>

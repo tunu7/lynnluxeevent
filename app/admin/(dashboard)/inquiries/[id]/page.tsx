@@ -8,7 +8,7 @@ import SubmitButton from "@/components/admin/SubmitButton";
 import { buttons, card, field, label } from "@/components/admin/styles";
 import { getInquiry } from "@/lib/admin-data";
 import { formatDate, formatDateTime } from "@/lib/format";
-import { site } from "@/lib/site";
+import { readSiteContent } from "@/lib/site-content";
 import { deleteInquiry, saveInquiryNotes } from "../actions";
 
 export const metadata: Metadata = { title: "Inquiry" };
@@ -17,12 +17,13 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
   const { id } = await params;
   const inquiry = Number.isSafeInteger(Number(id)) ? await getInquiry(Number(id)) : null;
   if (!inquiry) notFound();
+  const { brand, contact } = await readSiteContent();
 
   const digits = inquiry.phone.replace(/[^\d]/g, "").replace(/^0+/, "");
   const waNumber = digits.length === 10 ? `91${digits}` : digits;
   const wa = (message: string) => `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
   const whatsapp = wa(
-    `Hello ${inquiry.name}, this is ${site.shortName} following up on your ${inquiry.eventType.toLowerCase()} inquiry.`,
+    `Hello ${inquiry.name}, this is ${brand.shortName} following up on your ${inquiry.eventType.toLowerCase()} inquiry.`,
   );
 
   const occasion = inquiry.eventType.toLowerCase();
@@ -30,7 +31,7 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
   const templates = [
     {
       label: "First reply",
-      text: `Hello ${inquiry.name}, thank you for reaching out to ${site.name} about your ${occasion}${onDate}. We'd love to help! When would be a good time for a quick call to talk through your ideas?`,
+      text: `Hello ${inquiry.name}, thank you for reaching out to ${brand.name} about your ${occasion}${onDate}. We'd love to help! When would be a good time for a quick call to talk through your ideas?`,
     },
     {
       label: "Follow up",
@@ -42,11 +43,11 @@ export default async function InquiryPage({ params }: PageProps<"/admin/inquirie
     },
     {
       label: "Booking confirmed",
-      text: `Hello ${inquiry.name}, we're delighted to confirm your ${occasion}${onDate} with ${site.name}. We'll be in touch shortly with the next steps.`,
+      text: `Hello ${inquiry.name}, we're delighted to confirm your ${occasion}${onDate} with ${brand.name}. We'll be in touch shortly with the next steps.`,
     },
     {
       label: "Thank you",
-      text: `Hello ${inquiry.name}, thank you for letting us be part of your ${occasion}. It was a pleasure! We'd love to hear your feedback, and do tag us on Instagram ${site.contact.instagramHandle}.`,
+      text: `Hello ${inquiry.name}, thank you for letting us be part of your ${occasion}. It was a pleasure! We'd love to hear your feedback, and do tag us on Instagram ${contact.instagramHandle}.`,
     },
   ];
 

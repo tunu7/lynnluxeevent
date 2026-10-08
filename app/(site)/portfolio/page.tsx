@@ -6,6 +6,8 @@ import Reveal from "@/components/ui/Reveal";
 import CtaBand from "@/components/sections/CtaBand";
 import EventCard from "@/components/sections/EventCard";
 import { getEvents } from "@/lib/content";
+import Emphasis from "@/components/ui/Emphasis";
+import { getSiteContent } from "@/lib/site-content";
 
 export const metadata: Metadata = pageMetadata({
   title: "Portfolio: Weddings, Birthdays & Corporate Events",
@@ -15,14 +17,14 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function PortfolioPage() {
-  const events = await getEvents();
+  const [events, { portfolioPage }] = await Promise.all([getEvents(), getSiteContent()]);
 
   return (
     <>
       <PageHeader
-        eyebrow="Portfolio"
-        title="Our work, in moments."
-        intro="A look at recent weddings, private celebrations and corporate occasions, each one designed from scratch around the people it was for."
+        eyebrow={portfolioPage.eyebrow}
+        title={<Emphasis text={portfolioPage.title} />}
+        intro={portfolioPage.intro}
       />
 
       <section className="section-y">

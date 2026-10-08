@@ -5,51 +5,55 @@ import { AtSign, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import PageHeader from "@/components/ui/PageHeader";
 import ButtonLink from "@/components/ui/ButtonLink";
-import { site, whatsappLink } from "@/lib/site";
+import { site } from "@/lib/site";
+import Emphasis from "@/components/ui/Emphasis";
+import { contactLinks, getSiteContent } from "@/lib/site-content";
 
 export const metadata: Metadata = pageMetadata({
   title: "Contact Us",
-  description: `Call ${site.contact.phoneDisplay}, WhatsApp or message ${site.name} to start planning your wedding, birthday or corporate event in Arunachal Pradesh.`,
+  description: `Call, WhatsApp or message ${site.name} to start planning your wedding, birthday or corporate event in Arunachal Pradesh.`,
   path: "/contact",
 });
 
-const channels: { icon: LucideIcon; label: string; value: string; href?: string; note: string }[] = [
-  {
-    icon: Phone,
-    label: "Call",
-    value: site.contact.phoneDisplay,
-    href: `tel:${site.contact.phone}`,
-    note: "Speak directly with a planner.",
-  },
-  {
-    icon: MessageCircle,
-    label: "WhatsApp",
-    value: "Chat with us",
-    href: whatsappLink(`Hello ${site.shortName}, I'd like to plan an event.`),
-    note: "Our fastest response, usually within a day.",
-  },
-  {
-    icon: AtSign,
-    label: "Instagram",
-    value: site.contact.instagramHandle,
-    href: site.contact.instagram,
-    note: "Recent events and behind the scenes.",
-  },
-  {
-    icon: MapPin,
-    label: "Studio",
-    value: `${site.contact.locality}, ${site.contact.region}`,
-    note: "Planning events across the state.",
-  },
-];
+export default async function ContactPage() {
+  const content = await getSiteContent();
+  const { contact, brand, contactPage } = content;
+  const links = contactLinks(content);
 
-export default function ContactPage() {
+  const channels: { icon: LucideIcon; label: string; value: string; href?: string; note: string }[] = [
+    { icon: Phone, label: "Call", value: contact.phoneDisplay, href: links.tel, note: "Speak directly with a planner." },
+    {
+      icon: MessageCircle,
+      label: "WhatsApp",
+      value: "Chat with us",
+      href: links.whatsapp(`Hello ${brand.shortName}, I'd like to plan an event.`),
+      note: "Our fastest response, usually within a day.",
+    },
+    ...(contact.instagramUrl
+      ? [
+          {
+            icon: AtSign,
+            label: "Instagram",
+            value: contact.instagramHandle,
+            href: contact.instagramUrl,
+            note: "Recent events and behind the scenes.",
+          },
+        ]
+      : []),
+    {
+      icon: MapPin,
+      label: "Studio",
+      value: `${contact.locality}, ${contact.region}`,
+      note: "Planning events across the state.",
+    },
+  ];
+
   return (
     <>
       <PageHeader
-        eyebrow="Contact"
-        title="Let's start planning."
-        intro="Whether you have a date, a venue and a vision or just the beginnings of an idea, we'd love to hear from you."
+        eyebrow={contactPage.eyebrow}
+        title={<Emphasis text={contactPage.title} />}
+        intro={contactPage.intro}
         action={<ButtonLink href="/inquire">Send an inquiry</ButtonLink>}
       />
 

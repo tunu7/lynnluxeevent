@@ -1,18 +1,15 @@
 import ButtonLink from "@/components/ui/ButtonLink";
 import Media from "@/components/ui/Media";
-import { site } from "@/lib/site";
+import Emphasis from "@/components/ui/Emphasis";
+import { getSiteContent } from "@/lib/site-content";
 import type { PortfolioEvent } from "@/content/types";
 import type { CSSProperties } from "react";
 
 const rise = (ms: number) => ({ "--rise-delay": `${ms}ms` }) as CSSProperties;
 
-const highlights = [
-  ["One team", "From first idea to final guest"],
-  ["Design-led", "Décor, styling & tablescapes"],
-  ["Statewide", `Celebrations across ${site.contact.region}`],
-];
+export default async function Hero({ feature }: { feature?: PortfolioEvent }) {
+  const { home, brand } = await getSiteContent();
 
-export default function Hero({ feature }: { feature?: PortfolioEvent }) {
   return (
     <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40">
       <div
@@ -24,13 +21,13 @@ export default function Hero({ feature }: { feature?: PortfolioEvent }) {
           <h1>
             <span className="eyebrow animate-rise flex items-center gap-3 text-accent">
               <span aria-hidden className="h-px w-8 bg-accent/60" />
-              Luxury event planning &amp; styling in {site.contact.region}
+              {home.heroEyebrow}
             </span>
             <span
               className="animate-rise mt-7 block text-[clamp(3rem,7.6vw,6.5rem)] leading-[0.98]"
               style={rise(80)}
             >
-              Celebrations, <em className="text-accent">beautifully</em> composed.
+              <Emphasis text={home.heroTitle} />
             </span>
           </h1>
 
@@ -38,28 +35,29 @@ export default function Hero({ feature }: { feature?: PortfolioEvent }) {
             className="animate-rise mt-8 max-w-xl text-lg leading-relaxed text-ink-2 md:text-xl md:leading-relaxed"
             style={rise(160)}
           >
-            Weddings, milestone birthdays and corporate occasions, designed with intention and run without a
-            hitch. We look after every detail, so on the day all you have to do is enjoy it.
+            {home.heroIntro}
           </p>
 
           <div className="animate-rise mt-10 flex flex-wrap items-center gap-3" style={rise(240)}>
-            <ButtonLink href="/inquire">Plan your event</ButtonLink>
+            <ButtonLink href="/inquire">{home.heroPrimaryCta}</ButtonLink>
             <ButtonLink href="/portfolio" variant="secondary" arrow={false}>
-              Explore our work
+              {home.heroSecondaryCta}
             </ButtonLink>
           </div>
 
-          <dl
-            className="animate-rise mt-16 grid max-w-2xl grid-cols-1 gap-6 border-t border-line pt-8 sm:grid-cols-3"
-            style={rise(320)}
-          >
-            {highlights.map(([term, detail]) => (
-              <div key={term}>
-                <dt className="font-display text-2xl">{term}</dt>
-                <dd className="mt-1 text-sm leading-snug text-muted">{detail}</dd>
-              </div>
-            ))}
-          </dl>
+          {home.highlights.length ? (
+            <dl
+              className="animate-rise mt-16 grid max-w-2xl grid-cols-1 gap-6 border-t border-line pt-8 sm:grid-cols-3"
+              style={rise(320)}
+            >
+              {home.highlights.map(({ title, text }) => (
+                <div key={title}>
+                  <dt className="font-display text-2xl">{title}</dt>
+                  <dd className="mt-1 text-sm leading-snug text-muted">{text}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
         </div>
 
         <div className="animate-rise lg:col-span-5" style={rise(200)}>
@@ -70,7 +68,7 @@ export default function Hero({ feature }: { feature?: PortfolioEvent }) {
             />
             <Media
               src={feature?.cover ?? "/images/hero.jpg"}
-              alt={feature ? `${feature.title}, styled by ${site.shortName}` : `${site.shortName} event styling`}
+              alt={feature ? `${feature.title}, styled by ${brand.shortName}` : `${brand.shortName} event styling`}
               aspect="aspect-4/5"
               sizes="(min-width: 1024px) 40vw, 100vw"
               preload

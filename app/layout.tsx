@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import { site } from "@/lib/site";
+import { getSiteContent } from "@/lib/site-content";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -16,52 +17,57 @@ const manrope = Manrope({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: {
-    default: `${site.name} | Event Planning & Styling in Arunachal Pradesh`,
-    template: `%s | ${site.name}`,
-  },
-  description: site.description,
-  applicationName: site.name,
-  keywords: [
-    "event planner Arunachal Pradesh",
-    "event management Itanagar",
-    "wedding decorator Itanagar",
-    "event planner Jollang",
-    "event planner Itanagar",
-    "wedding planner Arunachal Pradesh",
-    "event decoration Arunachal Pradesh",
-    "birthday event planner",
-    "corporate events Arunachal Pradesh",
-    "event catering Arunachal Pradesh",
-  ],
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    locale: site.locale,
-    url: "/",
-    title: `${site.name} | Event Planning & Styling in Arunachal Pradesh`,
-    description: site.description,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${site.name} | Event Planning & Styling in Arunachal Pradesh`,
-    description: site.description,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
-  },
-  // Set in Vercel once the site is added to Google Search Console.
-  verification: process.env.GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
-    : undefined,
-  category: "events",
-  formatDetection: { telephone: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { brand } = await getSiteContent();
+  const homeTitle = `${brand.name} | Event Planning & Styling in Arunachal Pradesh`;
+
+  return {
+    metadataBase: new URL(site.url),
+    title: {
+      default: homeTitle,
+      template: `%s | ${brand.name}`,
+    },
+    description: brand.description,
+    applicationName: brand.name,
+    keywords: [
+      "event planner Arunachal Pradesh",
+      "event management Itanagar",
+      "wedding decorator Itanagar",
+      "event planner Jollang",
+      "event planner Itanagar",
+      "wedding planner Arunachal Pradesh",
+      "event decoration Arunachal Pradesh",
+      "birthday event planner",
+      "corporate events Arunachal Pradesh",
+      "event catering Arunachal Pradesh",
+    ],
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      siteName: brand.name,
+      locale: site.locale,
+      url: "/",
+      title: homeTitle,
+      description: brand.description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: homeTitle,
+      description: brand.description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+    },
+    // Set in Vercel once the site is added to Google Search Console.
+    verification: process.env.GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+      : undefined,
+    category: "events",
+    formatDetection: { telephone: false },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#f7f3ed",

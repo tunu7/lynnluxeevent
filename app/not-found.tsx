@@ -1,11 +1,14 @@
 import ButtonLink from "@/components/ui/ButtonLink";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
+import { contactLinks, getSiteContent } from "@/lib/site-content";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const content = await getSiteContent();
+
   return (
     <>
-      <SiteHeader />
+      <SiteHeader brand={content.brand} nav={content.nav} contact={content.contact} tel={contactLinks(content).tel} />
       <main id="main" className="flex-1">
         <section className="flex min-h-[70vh] items-center pb-20 pt-36">
           <div className="container-site">

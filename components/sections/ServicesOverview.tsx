@@ -3,16 +3,20 @@ import { ArrowUpRight } from "lucide-react";
 import ButtonLink from "@/components/ui/ButtonLink";
 import Reveal from "@/components/ui/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
+import Emphasis from "@/components/ui/Emphasis";
 import type { Service } from "@/content/types";
+import { getSiteContent } from "@/lib/site-content";
 
-export default function ServicesOverview({ services }: { services: Service[] }) {
+export default async function ServicesOverview({ services }: { services: Service[] }) {
+  const { home } = await getSiteContent();
+
   return (
     <section className="section-y bg-paper-2">
       <div className="container-site">
         <SectionHeading
-          eyebrow="Services"
-          title="Everything your occasion needs, under one roof."
-          intro="Planning, design and hospitality from one dedicated team. One vision, one point of contact, nothing lost between vendors."
+          eyebrow={home.servicesEyebrow}
+          title={<Emphasis text={home.servicesTitle} />}
+          intro={home.servicesIntro}
           action={
             <ButtonLink href="/services" variant="text" arrow>
               Explore services
@@ -46,10 +50,8 @@ export default function ServicesOverview({ services }: { services: Service[] }) 
           ))}
           <li className="flex flex-col justify-between gap-10 bg-ink p-8 text-paper md:p-10">
             <div>
-              <p className="font-display text-3xl leading-tight">Not sure where to begin?</p>
-              <p className="mt-3 text-base leading-relaxed text-paper/60">
-                Tell us the occasion and we&apos;ll recommend the right level of support.
-              </p>
+              <p className="font-display text-3xl leading-tight">{home.servicesPromptTitle}</p>
+              <p className="mt-3 text-base leading-relaxed text-paper/60">{home.servicesPromptText}</p>
             </div>
             <ButtonLink href="/inquire" variant="light" className="self-start">
               Get in touch

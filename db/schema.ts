@@ -57,3 +57,10 @@ export const services = pgTable("services", {
 export type Inquiry = typeof inquiries.$inferSelect;
 export type EventRow = typeof events.$inferSelect;
 export type ServiceRow = typeof services.$inferSelect;
+
+/** Single-row store for editable website copy (see lib/site-content-schema.ts). */
+export const siteContent = pgTable("site_content", {
+  id: text("id").primaryKey(),
+  data: jsonb("data").$type<Record<string, unknown>>().notNull().default({}),
+  ...timestamps,
+});

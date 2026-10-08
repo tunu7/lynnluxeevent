@@ -4,18 +4,17 @@ import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { eventTypes, type EventType } from "@/content/types";
-import { site, whatsappLink } from "@/lib/site";
 import { submitInquiry } from "@/lib/inquiry-actions";
 
 const field =
   "w-full rounded-sm border border-ink/15 bg-paper px-4 py-3.5 text-base text-ink outline-none transition-colors placeholder:text-ink/35 hover:border-ink/30 focus:border-ink";
 
-function buildMessage(data: FormData) {
+function buildMessage(data: FormData, shortName: string) {
   const get = (key: string) => String(data.get(key) ?? "").trim();
   const optional = (label: string, key: string) => (get(key) ? [`${label}: ${get(key)}`] : []);
 
   return [
-    `Hello ${site.shortName},`,
+    `Hello ${shortName},`,
     "",
     "I'd like to inquire about an event.",
     "",
@@ -29,7 +28,16 @@ function buildMessage(data: FormData) {
   ].join("\n");
 }
 
-export default function InquiryForm() {
+export default function InquiryForm({
+  shortName,
+  phoneDisplay,
+  whatsappBase,
+}: {
+  shortName: string;
+  phoneDisplay: string;
+  /** wa.me link without a message. */
+  whatsappBase: string;
+}) {
   const params = useSearchParams();
   const preset = params.get("type");
   const defaultType = eventTypes.includes(preset as EventType) ? (preset as EventType) : "";
@@ -38,7 +46,7 @@ export default function InquiryForm() {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    const url = whatsappLink(buildMessage(data));
+    const url = `${whatsappBase}?text=${encodeURIComponent(buildMessage(data, shortName))}`;
     // Open WhatsApp synchronously so popup blockers allow it, and save a copy
     // for the admin dashboard in the background.
     window.open(url, "_blank", "noopener,noreferrer");
@@ -53,7 +61,7 @@ export default function InquiryForm() {
         <h2 className="mt-6 text-3xl md:text-4xl">Your message is ready in WhatsApp.</h2>
         <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
           Press send in WhatsApp to deliver it to our team. If it didn&apos;t open, use the button below or call us
-          on {site.contact.phoneDisplay}.
+          on {phoneDisplay}.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a

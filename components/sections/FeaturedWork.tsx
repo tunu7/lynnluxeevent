@@ -1,19 +1,22 @@
 import ButtonLink from "@/components/ui/ButtonLink";
 import Reveal from "@/components/ui/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
+import Emphasis from "@/components/ui/Emphasis";
 import type { PortfolioEvent } from "@/content/types";
+import { getSiteContent } from "@/lib/site-content";
 import EventCard from "./EventCard";
 
-export default function FeaturedWork({ events }: { events: PortfolioEvent[] }) {
+export default async function FeaturedWork({ events }: { events: PortfolioEvent[] }) {
   const [lead, ...rest] = events;
   if (!lead) return null;
+  const { home } = await getSiteContent();
 
   return (
     <section className="section-y">
       <div className="container-site">
         <SectionHeading
-          eyebrow="Portfolio"
-          title="Recent celebrations."
+          eyebrow={home.workEyebrow}
+          title={<Emphasis text={home.workTitle} />}
           action={
             <ButtonLink href="/portfolio" variant="text">
               See the full portfolio

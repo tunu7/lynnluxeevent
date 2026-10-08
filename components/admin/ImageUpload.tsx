@@ -16,7 +16,7 @@ async function uploadFile(file: File) {
   return blob.url;
 }
 
-function Thumb({ src, alt }: { src: string; alt: string }) {
+function Thumb({ src, alt, contain }: { src: string; alt: string; contain?: boolean }) {
   const [failed, setFailed] = useState<string | null>(null);
 
   // Seeded entries point at /images paths that may not be uploaded yet.
@@ -38,7 +38,7 @@ function Thumb({ src, alt }: { src: string; alt: string }) {
       sizes="200px"
       // Admin previews skip the optimizer so freshly uploaded files show instantly.
       unoptimized
-      className="object-cover"
+      className={contain ? "object-contain p-4" : "object-cover"}
     />
   );
 }
@@ -73,10 +73,16 @@ export function CoverUpload({
   name,
   value: url,
   onChange,
+  noun = "cover photo",
+  contain,
 }: {
   name: string;
   value: string;
   onChange: (url: string) => void;
+  /** What the image is, for the button text ("Upload logo"). */
+  noun?: string;
+  /** Show the whole image instead of cropping, e.g. for logos. */
+  contain?: boolean;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const { busy, error, run } = useUploader((urls) => onChange(urls[0]));
@@ -85,7 +91,7 @@ export function CoverUpload({
     <div>
       <input type="hidden" name={name} value={url} />
       <div className="relative aspect-16/9 overflow-hidden rounded-sm border border-line bg-paper-3">
-        {url ? <Thumb src={url} alt="Cover photo" /> : null}
+        {url ? <Thumb src={url} alt={noun} contain={contain} /> : null}
         <button
           type="button"
           onClick={() => input.current?.click()}
@@ -95,7 +101,7 @@ export function CoverUpload({
           } ${busy ? "bg-ink/45! text-paper!" : ""}`}
         >
           <ImagePlus aria-hidden size={22} strokeWidth={1.5} />
-          {busy ? "Uploading…" : url ? "Replace cover" : "Upload cover photo"}
+          {busy ? "Uploading…" : url ? `Replace ${noun === "cover photo" ? "cover" : noun}` : `Upload ${noun}`}
         </button>
       </div>
       <input

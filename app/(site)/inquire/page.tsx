@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import PageHeader from "@/components/ui/PageHeader";
 import InquiryForm from "@/components/sections/InquiryForm";
 import { site } from "@/lib/site";
+import Emphasis from "@/components/ui/Emphasis";
+import { contactLinks, getSiteContent } from "@/lib/site-content";
 
 export const metadata: Metadata = pageMetadata({
   title: "Plan Your Event",
@@ -12,19 +14,17 @@ export const metadata: Metadata = pageMetadata({
   path: "/inquire",
 });
 
-const steps = [
-  "Share a few details about your occasion. It takes about two minutes.",
-  "We reply on WhatsApp, usually within a day, to arrange a short call.",
-  "We send a tailored concept and proposal for you to refine.",
-];
+export default async function InquirePage() {
+  const content = await getSiteContent();
+  const { inquirePage, contact, brand } = content;
+  const links = contactLinks(content);
 
-export default function InquirePage() {
   return (
     <>
       <PageHeader
-        eyebrow="Start a conversation"
-        title="Tell us about your celebration."
-        intro="The more you share, the better we can prepare. Only your name, phone number and occasion are required; the rest can wait for our call."
+        eyebrow={inquirePage.eyebrow}
+        title={<Emphasis text={inquirePage.title} />}
+        intro={inquirePage.intro}
       />
 
       <section className="section-y bg-paper-2">
@@ -32,7 +32,7 @@ export default function InquirePage() {
           <aside className="lg:col-span-4">
             <p className="eyebrow text-accent">What happens next</p>
             <ol className="mt-8 space-y-6">
-              {steps.map((step, i) => (
+              {inquirePage.steps.map((step, i) => (
                 <li key={step} className="flex gap-4">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink text-sm font-semibold text-paper">
                     {i + 1}
@@ -43,8 +43,8 @@ export default function InquirePage() {
             </ol>
             <p className="mt-10 text-sm text-muted">
               Prefer to talk?{" "}
-              <a href={`tel:${site.contact.phone}`} className="font-semibold text-ink underline underline-offset-4">
-                {site.contact.phoneDisplay}
+              <a href={links.tel} className="font-semibold text-ink underline underline-offset-4">
+                {contact.phoneDisplay}
               </a>
             </p>
           </aside>
@@ -52,7 +52,7 @@ export default function InquirePage() {
           <div className="lg:col-span-8">
             {/* Reads ?type= from the URL, so it streams in after the static shell. */}
             <Suspense fallback={<div className="h-[42rem] animate-pulse rounded-sm bg-paper" aria-hidden />}>
-              <InquiryForm />
+              <InquiryForm shortName={brand.shortName} phoneDisplay={contact.phoneDisplay} whatsappBase={links.whatsapp()} />
             </Suspense>
           </div>
         </div>

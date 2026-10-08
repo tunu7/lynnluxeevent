@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { absoluteUrl, breadcrumbs, pageMetadata } from "@/lib/seo";
 import JsonLd from "@/components/ui/JsonLd";
-import { site } from "@/lib/site";
+import Emphasis from "@/components/ui/Emphasis";
+import { getSiteContent } from "@/lib/site-content";
 import { Check } from "lucide-react";
 import ButtonLink from "@/components/ui/ButtonLink";
 import PageHeader from "@/components/ui/PageHeader";
@@ -17,14 +18,14 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function ServicesPage() {
-  const services = await getServices();
+  const [services, { servicesPage, contact }] = await Promise.all([getServices(), getSiteContent()]);
 
   return (
     <>
       <PageHeader
-        eyebrow="Services"
-        title="Services shaped around your occasion."
-        intro="Book a single service or let us handle the entire event. Either way, it starts with a conversation about what matters most to you."
+        eyebrow={servicesPage.eyebrow}
+        title={<Emphasis text={servicesPage.title} />}
+        intro={servicesPage.intro}
       />
 
       <nav aria-label="Services" className="sticky top-18 z-40 border-b border-line bg-paper/90 backdrop-blur-md md:top-20">
@@ -93,7 +94,7 @@ export default async function ServicesPage() {
               name: service.title,
               description: service.description,
               url: absoluteUrl(`/services#${service.slug}`),
-              areaServed: { "@type": "State", name: site.contact.region },
+              areaServed: { "@type": "State", name: contact.region },
               provider: { "@id": `${absoluteUrl("/")}#organization` },
             },
           })),

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, CalendarHeart, Images, LayoutDashboard, Sparkles } from "lucide-react";
+import { CalendarDays, CalendarHeart, Images, LayoutDashboard, PenLine, Sparkles } from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
@@ -10,6 +10,7 @@ const links = [
   { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/admin/portfolio", label: "Portfolio", icon: Images },
   { href: "/admin/services", label: "Services", icon: Sparkles },
+  { href: "/admin/content", label: "Website content", icon: PenLine },
 ];
 
 /** Static links; also the Suspense fallback while the pathname resolves. */

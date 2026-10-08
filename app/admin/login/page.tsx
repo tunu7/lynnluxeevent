@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Logo from "@/components/layout/Logo";
+import { getSiteContent } from "@/lib/site-content";
 import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = { title: "Sign in" };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const { brand } = await getSiteContent();
+
   return (
     <main id="main" className="flex min-h-dvh items-center justify-center bg-paper-2 px-4 py-16">
       <div className="w-full max-w-sm">
         <div className="mb-10 flex justify-center">
-          <Logo />
+          <Logo brand={brand} />
         </div>
         <div className="rounded-sm border border-line bg-paper p-8">
           <h1 className="text-3xl">Studio admin</h1>

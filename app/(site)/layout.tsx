@@ -2,34 +2,37 @@ import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import JsonLd from "@/components/ui/JsonLd";
 import { site } from "@/lib/site";
+import { contactLinks, getSiteContent } from "@/lib/site-content";
+import type { SiteContent } from "@/lib/site-content-schema";
 import { absoluteUrl } from "@/lib/seo";
 
 const home = absoluteUrl("/");
 
-const structuredData = {
+const structuredData = ({ brand, contact }: SiteContent) => ({
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "ProfessionalService",
       "@id": `${home}#organization`,
-      name: site.name,
-      alternateName: site.shortName,
-      slogan: site.tagline,
-      description: site.description,
+      name: brand.name,
+      alternateName: brand.shortName,
+      slogan: brand.tagline,
+      description: brand.description,
       url: home,
       image: absoluteUrl("/opengraph-image"),
-      telephone: site.contact.phone,
-      sameAs: [site.contact.instagram],
-      areaServed: { "@type": "State", name: site.contact.region },
+      ...(brand.logo ? { logo: brand.logo } : {}),
+      telephone: contact.phone,
+      sameAs: contact.instagramUrl ? [contact.instagramUrl] : [],
+      areaServed: { "@type": "State", name: contact.region },
       address: {
         "@type": "PostalAddress",
-        addressLocality: site.contact.locality,
-        addressRegion: site.contact.region,
+        addressLocality: contact.locality,
+        addressRegion: contact.region,
         addressCountry: site.contact.country,
       },
       contactPoint: {
         "@type": "ContactPoint",
-        telephone: site.contact.phone,
+        telephone: contact.phone,
         contactType: "customer service",
       },
       knowsAbout: [
@@ -44,23 +47,25 @@ const structuredData = {
     {
       "@type": "WebSite",
       "@id": `${home}#website`,
-      name: site.name,
+      name: brand.name,
       url: home,
       inLanguage: "en-IN",
       publisher: { "@id": `${home}#organization` },
     },
   ],
-};
+});
 
-export default function SiteLayout({ children }: LayoutProps<"/">) {
+export default async function SiteLayout({ children }: LayoutProps<"/">) {
+  const content = await getSiteContent();
+
   return (
     <>
-      <SiteHeader />
+      <SiteHeader brand={content.brand} nav={content.nav} contact={content.contact} tel={contactLinks(content).tel} />
       <main id="main" className="flex-1">
         {children}
       </main>
       <SiteFooter />
-      <JsonLd data={structuredData} />
+      <JsonLd data={structuredData(content)} />
     </>
   );
 }
